@@ -70,6 +70,20 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+
+
+
+# Auto generate assets class
+flutter_assets:
+  assets_path: assets/
+  output_path: lib/core/constants/
+  filename: app_assets.dart
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 flutter_gen:
