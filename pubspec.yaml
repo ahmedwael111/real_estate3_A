@@ -56,12 +56,14 @@ dependencies:
   pin_code_fields: ^9.3.0
   flutter_animate: ^4.5.2
   firebase_messaging: ^16.2.0
-  flutter_local_notifications: ^17.2.3
+#  flutter_local_notifications: ^17.2.3
   drop_down_list: ^2.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_gen_runner: ^5.4.0
+
   build_runner: ^2.4.13
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
