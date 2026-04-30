@@ -19,9 +19,11 @@ class RealStateApp3A extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return MaterialApp(
+          
           debugShowCheckedModeBanner: false,
           title: 'Real Estate 3A',
           theme: ThemeData(
+            scaffoldBackgroundColor: Color(0xffFAF9F6),
             primarySwatch: Colors.blue,
           ),
           home: const SplashView(),

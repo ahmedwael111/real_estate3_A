@@ -14,13 +14,22 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  static const String obBoardingImg = 'assets/obBoardingImg.svg';
+  static const AssetGenImage onBoardingImgg = AssetGenImage(
+    'assets/onBoardingImgg.png',
+  );
   static const AssetGenImage plashPng = AssetGenImage('assets/plashPng.png');
   static const AssetGenImage splashPng1 = AssetGenImage(
     'assets/splashPng1.png',
   );
 
   /// List of all assets
-  static List<AssetGenImage> get values => [plashPng, splashPng1];
+  static List<dynamic> get values => [
+    obBoardingImg,
+    onBoardingImgg,
+    plashPng,
+    splashPng1,
+  ];
 }
 
 class AssetGenImage {

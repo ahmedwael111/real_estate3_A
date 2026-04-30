@@ -4,7 +4,7 @@
 // import '../../gen/assets.gen.dart';
 // import '../utils/app_colors.dart';
 // import '../utils/app_styles.dart';
-// import 'custom_button.dart';
+// import 'custom_OnBoarding_button.dart';
 // import 'custom_svg_image.dart';
 //
 // class NoAccountWidget extends StatelessWidget {

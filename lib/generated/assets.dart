@@ -2,6 +2,8 @@
 class Assets {
   Assets._();
 
+  static const String assetsObBoardingImg = 'assets/obBoardingImg.svg';
+  static const String assetsOnBoardingImgg = 'assets/onBoardingImgg.png';
   static const String assetsPlashPng = 'assets/plashPng.png';
   static const String assetsSplashPng1 = 'assets/splashPng1.png';
 
