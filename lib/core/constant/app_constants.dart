@@ -2,10 +2,11 @@ class AppConstants {
   // API Configuration
   static const String BaseUrl = 'https://real.newcinderella.online';
 
-//                                14|chBAm5lb1JaPW8PGgfsv784NMSnHQoPlpvxMH7Eb41295c33
+//                            35|2DrpsK7OhWowZBJEqUKvi0c6KS1u4LEnd7I7Am4t87a5f613
   // Auth Endpoints
   static const String registerEndpoint = '/api/v1/auth/register';
   static const String loginEndpoint = '/api/v1/auth/login';
+  static const String home = '/api/v1/home';
   static const String sendResetPasswordOtpEndpoint =
       '/api/auth/send-restpassword-otp';
   static const String verifyResetPasswordOtpEndpoint =
