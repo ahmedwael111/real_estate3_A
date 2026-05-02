@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:real_estate3_a/core/constant/custom_button.dart';
 import 'package:real_estate3_a/core/funcations/app_functions.dart';
 import 'package:real_estate3_a/core/utils/app_colors.dart';
-import 'package:real_estate3_a/core/utils/app_fonts.dart';
-import 'package:real_estate3_a/core/utils/app_styles.dart';
-import 'package:real_estate3_a/core/utils/app_texts.dart';
 import 'package:real_estate3_a/features/Auth/presentation/views/SignIn_view.dart';
-import 'package:real_estate3_a/features/onBoarding/presentation/views/widgets/Nav_button.dart';
-import 'package:real_estate3_a/features/onBoarding/presentation/views/widgets/TextsPageView.dart';
-import 'package:real_estate3_a/features/onBoarding/presentation/views/widgets/custom_OnBoarding_button.dart';
-import 'package:real_estate3_a/generated/assets.dart';
 
-import 'DotsIndicator.dart';
-import 'OnboardingTexts.dart';
+import 'package:real_estate3_a/features/Auth/presentation/views/SignUp_view.dart';
+
+import 'package:real_estate3_a/features/onBoarding/presentation/views/widgets/custom_OnBoarding_button.dart';
+
 import 'TextIndicatorSection.dart';
 import 'onBoarding_Image.dart';
 
@@ -58,7 +52,6 @@ class _OnboardingviewbodyState extends State<Onboardingviewbody> {
           text: "Continue",
           onpress: () {
             AppFunctions.navigateTo(context, SigninView());
-
           },
           buttonColor: AppColors.splashColor,
         ),

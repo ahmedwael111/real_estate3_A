@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/core/bloc%20observe/bloc_service.dart';
 import 'package:real_estate3_a/core/di.dart';
 import 'package:real_estate3_a/features/splash/presentation/views/splash_view.dart';
 
-void main() {
-  initAppModule();
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initAppModule();
+  Bloc.observer=MyBlocObserver();
   runApp(const RealStateApp3A());
 }
 

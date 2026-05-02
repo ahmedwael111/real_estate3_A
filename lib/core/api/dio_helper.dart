@@ -13,7 +13,7 @@ class DioHelper {
   static Future<void> init() async {
     dio = Dio(
       BaseOptions(
-        baseUrl: AppConstants.KhamnyBaseUrl,
+        baseUrl: AppConstants.BaseUrl,
         receiveDataWhenStatusError: true,
       ),
     );
@@ -34,6 +34,8 @@ class DioHelper {
     final lang = AppFunctions.getLanguageCode();
     final tokenValue = token?.trim();
     final hasToken = tokenValue != null && tokenValue.isNotEmpty;
+
+
 
     dio!.options.headers = {
       'Accept': 'application/json',

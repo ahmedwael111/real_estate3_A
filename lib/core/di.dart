@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:real_estate3_a/features/Auth/data/repo/AuthRepoImp.dart';
+import 'package:real_estate3_a/features/Auth/domain/repo/AuthRepo.dart';
 import 'save data/save_data.dart';
 import 'security/security_helper.dart';
 import 'api/dio_helper.dart';
@@ -20,6 +22,8 @@ Future<void> initAppModule() async {
   await authStorage.migrateFromCacheIfNeeded(cacheHelper);
   await authStorage.loadFromSecure();
   getIt.registerLazySingleton<AuthStorage>(() => authStorage);
+
+  getIt.registerLazySingleton<AuthRepoImpl>(() => AuthRepoImpl());
 
   await DioHelper.init();
   getIt.registerLazySingleton<DioHelper>(() => DioHelper());

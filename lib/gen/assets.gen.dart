@@ -14,6 +14,8 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  static const String appleIcon = 'assets/apple_icon.svg';
+  static const String googleIcon = 'assets/google_icon.svg';
   static const String obBoardingImg = 'assets/obBoardingImg.svg';
   static const AssetGenImage onBoardingImgg = AssetGenImage(
     'assets/onBoardingImgg.png',
@@ -25,6 +27,8 @@ class Assets {
 
   /// List of all assets
   static List<dynamic> get values => [
+    appleIcon,
+    googleIcon,
     obBoardingImg,
     onBoardingImgg,
     plashPng,

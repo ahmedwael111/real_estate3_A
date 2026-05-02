@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/core/funcations/app_functions.dart';
 import 'package:real_estate3_a/features/Auth/presentation/views/SignIn_view.dart';
+import 'package:real_estate3_a/features/Auth/presentation/views/SignUp_view.dart';
 
 import 'DotsIndicator.dart';
 import 'Nav_button.dart';
