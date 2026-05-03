@@ -14,24 +14,42 @@ import 'package:flutter/widgets.dart';
 class Assets {
   const Assets._();
 
+  static const String navigationHome = 'assets/Navigation_home.svg';
   static const String appleIcon = 'assets/apple_icon.svg';
+  static const String chatHome = 'assets/chat_home.svg';
+  static const String favProperty = 'assets/fav_property.svg';
+  static const String filterHome = 'assets/filter_home.svg';
   static const String googleIcon = 'assets/google_icon.svg';
+  static const String locationHome = 'assets/location_home.svg';
+  static const String notificationHome = 'assets/notification_home.svg';
   static const String obBoardingImg = 'assets/obBoardingImg.svg';
   static const AssetGenImage onBoardingImgg = AssetGenImage(
     'assets/onBoardingImgg.png',
   );
   static const AssetGenImage plashPng = AssetGenImage('assets/plashPng.png');
+  static const String reviewIcon = 'assets/review_icon.svg';
+  static const String saleProperty = 'assets/sale_property.svg';
+  static const String searchHome = 'assets/search_home.svg';
   static const AssetGenImage splashPng1 = AssetGenImage(
     'assets/splashPng1.png',
   );
 
   /// List of all assets
   static List<dynamic> get values => [
+    navigationHome,
     appleIcon,
+    chatHome,
+    favProperty,
+    filterHome,
     googleIcon,
+    locationHome,
+    notificationHome,
     obBoardingImg,
     onBoardingImgg,
     plashPng,
+    reviewIcon,
+    saleProperty,
+    searchHome,
     splashPng1,
   ];
 }

@@ -17,7 +17,7 @@ class HomeDataModel {
     required this.recommended,
   });
 
-  /// The API wraps everything under `data`
+
   factory HomeDataModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>;
 

@@ -3,10 +3,19 @@ class Assets {
   Assets._();
 
   static const String assetsAppleIcon = 'assets/apple_icon.svg';
+  static const String assetsChatHome = 'assets/chat_home.svg';
+  static const String assetsFavProperty = 'assets/fav_property.svg';
+  static const String assetsFilterHome = 'assets/filter_home.svg';
   static const String assetsGoogleIcon = 'assets/google_icon.svg';
+  static const String assetsLocationHome = 'assets/location_home.svg';
+  static const String assetsNavigationHome = 'assets/Navigation_home.svg';
+  static const String assetsNotificationHome = 'assets/notification_home.svg';
   static const String assetsObBoardingImg = 'assets/obBoardingImg.svg';
   static const String assetsOnBoardingImgg = 'assets/onBoardingImgg.png';
   static const String assetsPlashPng = 'assets/plashPng.png';
+  static const String assetsReviewIcon = 'assets/review_icon.svg';
+  static const String assetsSaleProperty = 'assets/sale_property.svg';
+  static const String assetsSearchHome = 'assets/search_home.svg';
   static const String assetsSplashPng1 = 'assets/splashPng1.png';
 
 }
