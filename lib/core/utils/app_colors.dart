@@ -8,6 +8,12 @@ class AppColors {
   static const Color green = Color(0xFF008D36);
   static const Color yello = Color(0xFFFAE700);
   static const Color pink = Color(0xFFFF4596);
+  // added from kero
+  static const Color teal = Color(0xFF1B99A3);
+  // added from kero
+  static const Color darkGreenText = Color(0xFF336E39);
+  // added from kero
+  static const Color lightGreenBg = Color(0xFFF2FBEF);
 
   static const Color darkColor = Color(0xFF313131);
   static const Color lightGrayColor = Color(0xFFFAFAFA);

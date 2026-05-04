@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:real_estate3_a/core/di.dart';
+import 'package:real_estate3_a/features/payment/presentation/screens/payment_details_screen.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() {
-  initAppModule();
+initAppModule();
   runApp(const RealStateApp3A());
 }
 
@@ -11,16 +13,20 @@ class RealStateApp3A extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Real Estate 3A',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Welcome to Real Estate 3A!'),
-        ),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(375, 812), // Standard design size
+      minTextAdapt: true,
+      splitScreenMode: true,
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Real Estate 3A',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: const PaymentDetailsScreen(),
+        );
+      },
     );
   }
 }
