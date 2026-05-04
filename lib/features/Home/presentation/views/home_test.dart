@@ -12,11 +12,11 @@ import 'package:real_estate3_a/features/Home/presentation/views/widgets/Home_sea
 import 'package:real_estate3_a/features/Home/presentation/views/widgets/View_All_Category.dart';
 import 'package:real_estate3_a/features/Home/presentation/views/widgets/propertyCard.dart';
 import 'package:real_estate3_a/generated/assets.dart';
-import '../../../../../core/di.dart';
-import '../../../domain/repo/HomeRepo.dart';
-import '../../home_cubit/home_cubit.dart';
-import 'CategoryChip.dart';
-import 'SectionHeader.dart';
+import '../../../../core/di.dart';
+import '../../domain/repo/HomeRepo.dart';
+import '../home_cubit/home_cubit.dart';
+import 'widgets/CategoryChip.dart';
+import 'widgets/SectionHeader.dart';
 
 class HomeViewTest extends StatelessWidget {
   const HomeViewTest({super.key});
@@ -38,7 +38,6 @@ class _HomeBody extends StatefulWidget {
 }
 
 class _HomeBodyState extends State<_HomeBody> {
-  int _selectedCategoryIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +86,9 @@ class _HomeBodyState extends State<_HomeBody> {
           }
 
           if (state is HomeLoaded) {
-            final data = state.homeData;
 
-              return HomeContent(data: data);
+
+              return HomeContent();
           }
 
           return const SizedBox.shrink();

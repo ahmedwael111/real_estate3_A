@@ -1,9 +1,11 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/features/Home/domain/entities/categoryEntity.dart';
 
+import '../../home_cubit/home_cubit.dart';
 import 'CategoryChip.dart';
 
 class Homecategorylist extends StatefulWidget {
@@ -16,10 +18,10 @@ final List<CategoryEntity> categories;
 }
 
 class _HomecategorylistState extends State<Homecategorylist> {
-  int selectedCategoryIndex=0;
+  int selectedCategoryIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-
     return Padding(
       padding: EdgeInsets.only(top: 16.h),
       child: SizedBox(
@@ -33,13 +35,15 @@ class _HomecategorylistState extends State<Homecategorylist> {
           itemBuilder: (context, index) => CategoryChip(
             category: widget.categories[index],
             isSelected: selectedCategoryIndex == index,
-            onTap: () =>
-                setState(() =>selectedCategoryIndex = index),
+            onTap: () {
+              setState(() => selectedCategoryIndex = index); 
+              final cat = widget.categories[index];
+              context.read<HomeCubit>().onCategorySelected(cat.id);
+            },
           ),
         ),
       ),
     );
-
   }
 }
 // Widget _buildCategories(List categories) {
