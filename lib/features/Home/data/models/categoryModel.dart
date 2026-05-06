@@ -17,11 +17,11 @@ class CategoryModel {
   });
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
-    id: json['id'] as int,
-    name: json['name'] as String,
-    slug: json['slug'] as String,
-    description: json['description'] as String,
-    sortOrder: json['sort_order'] as int,
+    id: json['id'] ?? 0,
+    name: json['name']?.toString() ?? '',
+    slug: json['slug']?.toString() ?? '',
+    description: json['description']?.toString() ?? '',
+    sortOrder: json['sort_order'] ?? 0,
   );
 
   CategoryEntity toEntity() => CategoryEntity(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:real_estate3_a/core/utils/app_styles.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/fav_button.dart';
 import 'package:real_estate3_a/generated/assets.dart';
 import '../../../domain/entities/property_cardEntity.dart';
 
@@ -92,7 +93,7 @@ class PropertyCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 6.w),
-                      SvgPicture.asset(Assets.assetsFavProperty),
+                    FavButton(propertyId: property.id),
                     ],
                   ),
                   SizedBox(height: 4.h),
@@ -253,11 +254,7 @@ class PropertyCard extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 6.w),
-                        SvgPicture.asset(
-                          Assets.assetsFavProperty,
-                          width: 20.w,
-                          height: 20.h,
-                        ),
+                       FavButton(propertyId: property.id),
                       ],
                     ),
                     SizedBox(height: 12.h),

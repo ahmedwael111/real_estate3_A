@@ -19,7 +19,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         url: AppConstants.home,
         withAuth: false,
       );
-
+      print(response.data);
       return HomeDataModel.fromJson(
         response.data as Map<String, dynamic>,
       );

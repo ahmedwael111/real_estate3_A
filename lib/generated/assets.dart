@@ -4,10 +4,14 @@ class Assets {
 
   static const String assetsAppleIcon = 'assets/apple_icon.svg';
   static const String assetsChatHome = 'assets/chat_home.svg';
+  static const String assetsFavNav = 'assets/fav_nav.svg';
   static const String assetsFavProperty = 'assets/fav_property.svg';
   static const String assetsFilterHome = 'assets/filter_home.svg';
   static const String assetsGoogleIcon = 'assets/google_icon.svg';
+  static const String assetsHistoryNav = 'assets/history_nav.svg';
+  static const String assetsHomeNav = 'assets/home_nav.svg';
   static const String assetsLocationHome = 'assets/location_home.svg';
+  static const String assetsMabNav = 'assets/mab_nav.svg';
   static const String assetsNavigationHome = 'assets/Navigation_home.svg';
   static const String assetsNotificationHome = 'assets/notification_home.svg';
   static const String assetsObBoardingImg = 'assets/obBoardingImg.svg';

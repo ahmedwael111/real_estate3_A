@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:real_estate3_a/core/utils/app_colors.dart';
 import 'package:real_estate3_a/core/utils/app_styles.dart';
 
 import '../../../domain/entities/bottonNavBar_Entity.dart';
@@ -30,14 +32,16 @@ class Custombottomnavbar extends StatelessWidget {
         children: BottomNavBarItems.asMap().entries.map((e) {
           var index = e.key;
           var entity = e.value;
-          return GestureDetector(
-            onTap: () {
-              ontapChanged(index);
-
-            },
-            child: NavBarItem(
-              isSelected: currentIndex==index,
-              bottomNavigationBarEntity: entity,
+          return Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                ontapChanged(index);
+              },
+              child: NavBarItem(
+                isSelected: currentIndex == index,
+                bottomNavigationBarEntity: entity,
+              ),
             ),
           );
         }).toList(),
@@ -59,44 +63,50 @@ class NavBarItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return isSelected
         ? ActiveIcon(
-      icon: bottomNavigationBarEntity.activeIcon,
+      svgIcon: bottomNavigationBarEntity.activeIcon,
       text: bottomNavigationBarEntity.text,
     )
-        : InActiveIcon(icon: bottomNavigationBarEntity.inActiveIcon);
+        : InActiveIcon(svgIcon: bottomNavigationBarEntity.inActiveIcon,text: bottomNavigationBarEntity.text,);
   }
 }
 
 class InActiveIcon extends StatelessWidget {
-  const InActiveIcon({Key? key, required this.icon}) : super(key: key);
-  final IconData icon;
+  const InActiveIcon({Key? key, required this.svgIcon,required this.text}) : super(key: key);
+  final SvgPicture svgIcon;
+  final String text;
   @override
   Widget build(BuildContext context) {
-    return Icon(icon,color: Color(0xFFFF4A4A),);
+   return Container(
+     child: Column(
+       mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          svgIcon,
+               SizedBox(height: 8),
+              Text(text, style: getMediumStyle(fontSize: 13, color: Colors.black)),
+        ],
+      ),
+   );
   }
 }
 
 class ActiveIcon extends StatelessWidget {
-  const ActiveIcon({Key? key, required this.text, required this.icon})
+  const ActiveIcon({Key? key, required this.text, required this.svgIcon})
       : super(key: key);
   final String text;
-  final IconData icon;
+  final SvgPicture svgIcon;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: ShapeDecoration(
-        color: Color(0xffF0C8D6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadiusGeometry.circular(16),
+    return
+      Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            svgIcon,
+                 SizedBox(height: 8),
+                 Text(text, style: getMediumStyle(fontSize: 13, color: AppColors.splashColor)),
+          ],
         ),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Color(0xFFD61355)),
-          SizedBox(width: 8),
-          Text(text, style: getMediumStyle(fontSize: 13, color: Colors.black)),
-        ],
-      ),
-    );
+      );
+
   }
 }

@@ -17,10 +17,14 @@ class Assets {
   static const String navigationHome = 'assets/Navigation_home.svg';
   static const String appleIcon = 'assets/apple_icon.svg';
   static const String chatHome = 'assets/chat_home.svg';
+  static const String favNav = 'assets/fav_nav.svg';
   static const String favProperty = 'assets/fav_property.svg';
   static const String filterHome = 'assets/filter_home.svg';
   static const String googleIcon = 'assets/google_icon.svg';
+  static const String historyNav = 'assets/history_nav.svg';
+  static const String homeNav = 'assets/home_nav.svg';
   static const String locationHome = 'assets/location_home.svg';
+  static const String mabNav = 'assets/mab_nav.svg';
   static const String notificationHome = 'assets/notification_home.svg';
   static const String obBoardingImg = 'assets/obBoardingImg.svg';
   static const AssetGenImage onBoardingImgg = AssetGenImage(
@@ -39,10 +43,14 @@ class Assets {
     navigationHome,
     appleIcon,
     chatHome,
+    favNav,
     favProperty,
     filterHome,
     googleIcon,
+    historyNav,
+    homeNav,
     locationHome,
+    mabNav,
     notificationHome,
     obBoardingImg,
     onBoardingImgg,

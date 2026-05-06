@@ -1,43 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:real_estate3_a/core/funcations/app_functions.dart';
-import 'package:real_estate3_a/core/utils/app_colors.dart';
-import 'package:real_estate3_a/core/utils/app_styles.dart';
-import 'package:real_estate3_a/features/Home/presentation/views/widgets/HomeCategoryList.dart';
-import 'package:real_estate3_a/features/Home/presentation/views/widgets/Home_AppBar.dart';
 import 'package:real_estate3_a/features/Home/presentation/views/widgets/Home_Content.dart';
-import 'package:real_estate3_a/features/Home/presentation/views/widgets/Home_searchBar.dart';
-import 'package:real_estate3_a/features/Home/presentation/views/widgets/View_All_Category.dart';
-import 'package:real_estate3_a/features/Home/presentation/views/widgets/propertyCard.dart';
-import 'package:real_estate3_a/generated/assets.dart';
 import '../../../../core/di.dart';
+import '../../../Favorits/domain/repo/favoriteRepo.dart';
+import '../../../Favorits/presentation/cubit/favorite_cubit.dart';
 import '../../domain/repo/HomeRepo.dart';
 import '../home_cubit/home_cubit.dart';
-import 'widgets/CategoryChip.dart';
-import 'widgets/SectionHeader.dart';
 
-class HomeViewTest extends StatelessWidget {
-  const HomeViewTest({super.key});
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HomeCubit(getIt<HomeRepository>())..getHomeData(),
-      child: const _HomeBody(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => HomeCubit(getIt<HomeRepository>())..getHomeData(),
+        ),
+      ],
+      child: const HomeViewBody(),
     );
   }
 }
 
-class _HomeBody extends StatefulWidget {
-  const _HomeBody();
+class HomeViewBody extends StatefulWidget {
+  const HomeViewBody();
 
   @override
-  State<_HomeBody> createState() => _HomeBodyState();
+  State<HomeViewBody> createState() => _HomeViewBodyState();
 }
 
-class _HomeBodyState extends State<_HomeBody> {
+class _HomeViewBodyState extends State<HomeViewBody> {
 
   @override
   Widget build(BuildContext context) {
@@ -94,37 +88,6 @@ class _HomeBodyState extends State<_HomeBody> {
           return const SizedBox.shrink();
         },
       ),
-    );
+  );}
+
   }
-
-
-
-
-
-
-
-  // ── Horizontal list ────────────────────────────────────────────────────────
-  Widget _buildHorizontalList(
-
-      {
-    required List items,
-    required bool isWide,
-  }) {
-    return SizedBox(
-      height:MediaQuery.sizeOf(context).height*0.28,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        physics: const BouncingScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        itemCount: items.length,
-        separatorBuilder: (_, __) => SizedBox(width: 14.w),
-        itemBuilder: (context, index) => PropertyCard(
-          property: items[index],
-          isWide: isWide,
-          onTap: () {},
-        ),
-      ),
-    );
-  }
-}
-

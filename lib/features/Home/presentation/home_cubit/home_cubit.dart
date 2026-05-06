@@ -40,6 +40,7 @@ class HomeCubit extends Cubit<HomeState> {
     );
   }
 
+
   // ── Search ────────────────────────────────────────────────────────────────
   void onSearchChanged(String query) {
     _searchQuery = query.trim().toLowerCase();
@@ -48,10 +49,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   // ── Category ──────────────────────────────────────────────────────────────
   void onCategorySelected(int categoryId) {
-    _selectedCategoryId = categoryId;
+    _selectedCategoryId = categoryId; // -1 = All
     _emitFiltered();
   }
-
   // ── Filter ────────────────────────────────────────────────────────────────
   void applyFilter({
     String? listingType,

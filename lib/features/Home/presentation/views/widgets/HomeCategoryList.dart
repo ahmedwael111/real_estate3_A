@@ -22,6 +22,10 @@ class _HomecategorylistState extends State<Homecategorylist> {
 
   @override
   Widget build(BuildContext context) {
+    final allCategories = [
+      CategoryEntity(id: -1, name: 'All', slug: 'all', description: '', sortOrder: 0),
+      ...widget.categories,
+    ];
     return Padding(
       padding: EdgeInsets.only(top: 16.h),
       child: SizedBox(
@@ -30,15 +34,15 @@ class _HomecategorylistState extends State<Homecategorylist> {
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 20.w),
-          itemCount: widget.categories.length,
+          itemCount: allCategories.length,
           separatorBuilder: (_, __) => SizedBox(width: 10.w),
           itemBuilder: (context, index) => CategoryChip(
-            category: widget.categories[index],
+            category:allCategories[index],
             isSelected: selectedCategoryIndex == index,
             onTap: () {
-              setState(() => selectedCategoryIndex = index); 
-              final cat = widget.categories[index];
-              context.read<HomeCubit>().onCategorySelected(cat.id);
+              setState(() => selectedCategoryIndex = index);
+
+              context.read<HomeCubit>().onCategorySelected(allCategories[index].id);
             },
           ),
         ),

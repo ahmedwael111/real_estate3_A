@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-import 'package:real_estate3_a/features/Home/presentation/views/home_test.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/MainView.dart';
 
 import '../../../../../core/funcations/app_functions.dart';
 import '../../AuthCubit/Auth_Cubit.dart';
@@ -17,7 +17,7 @@ class SignInBody_BlocConsumer extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is SignInSuccess) {
-          AppFunctions.navigateTo(context, HomeViewTest());
+          AppFunctions.navigateTo(context, MainView());
         } else if (state is SignInError) {
           ScaffoldMessenger.of(
             context,
