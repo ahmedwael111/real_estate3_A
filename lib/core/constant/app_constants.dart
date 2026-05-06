@@ -1,6 +1,6 @@
 class AppConstants {
   // API Configuration
-  static const String KhamnyBaseUrl = 'https://washing-cars.storage-te.com';
+  static const String baseURL = 'https://real.newcinderella.online';
 
   // Auth Endpoints
   static const String registerEndpoint = '/api/auth/register';
@@ -46,4 +46,7 @@ class AppConstants {
   static const String productAddedToCart = 'تمت إضافة المنتج إلى السلة بنجاح';
   static const String orderPlacedSuccessfully = 'تم تأكيد الطلب بنجاح';
   static const String dataLoadedSuccessfully = 'تم تحميل البيانات بنجاح';
+
+  // payment endpoints
+  static const String createOrderEndpoint = '/api/v1/orders';
 }

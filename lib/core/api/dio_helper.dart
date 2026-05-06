@@ -13,7 +13,7 @@ class DioHelper {
   static Future<void> init() async {
     dio = Dio(
       BaseOptions(
-        baseUrl: AppConstants.KhamnyBaseUrl,
+        baseUrl: AppConstants.baseURL,
         receiveDataWhenStatusError: true,
       ),
     );
@@ -32,14 +32,14 @@ class DioHelper {
   static Future<void> headers({bool withAuth = false}) async {
     final token = getIt<AuthStorage>().token;
     final lang = AppFunctions.getLanguageCode();
-    final tokenValue = token?.trim();
-    final hasToken = tokenValue != null && tokenValue.isNotEmpty;
+    final tokenValue = token!.trim();
+    final hasToken = tokenValue.isNotEmpty;
 
     dio!.options.headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'locale': lang,
-      if (withAuth && hasToken) 'Authorization': 'Bearer $tokenValue',
+      if (withAuth && hasToken) 'Authorization': 'Bearer $token',
     };
   }
 
@@ -52,15 +52,16 @@ class DioHelper {
     await headers(withAuth: withAuth);
 
     final token = getIt<AuthStorage>().token;
+
     final userId = getIt<AuthStorage>().userId;
     final tokenValue = token?.trim();
     final hasToken = tokenValue != null && tokenValue.isNotEmpty;
-    final userIdValue = userId?.trim();
-    final hasUserId = userIdValue != null && userIdValue.isNotEmpty;
+    final userIdValue = userId!.trim();
+    final hasUserId = userIdValue.isNotEmpty;
 
     final fullQuery = {
       if (appendAuthParams && hasToken && hasUserId) "access-token": tokenValue,
-      if (appendAuthParams && hasToken && hasUserId) "id": userIdValue,
+      if (appendAuthParams && hasToken && hasUserId) "id": 80,
       if (query != null) ...query,
     };
 
@@ -75,11 +76,10 @@ class DioHelper {
     bool withAuth = false,
   }) async {
     await headers(withAuth: withAuth);
-
     final token = getIt<AuthStorage>().token;
     final userId = getIt<AuthStorage>().userId;
-    final tokenValue = token?.trim();
-    final hasToken = tokenValue != null && tokenValue.isNotEmpty;
+    final tokenValue = token!.trim();
+    final hasToken = tokenValue.isNotEmpty;
     final userIdValue = userId?.trim();
     final hasUserId = userIdValue != null && userIdValue.isNotEmpty;
 
@@ -176,10 +176,10 @@ class DioHelper {
     bool withAuth = false,
   }) async {
     final token = getIt<AuthStorage>().token;
-
+    final t = "236|aw192I6Dni4VMinhwLZLMbOnodRMHyDIGPPI5F8fd0f4ff75";
     dio!.options.headers = {
       'Accept': 'application/json',
-      if (withAuth && token != null) 'Authorization': 'Bearer $token',
+      if (withAuth && token != null) 'Authorization': 'Bearer $t',
     };
 
     return dio!.post(url, data: formData);

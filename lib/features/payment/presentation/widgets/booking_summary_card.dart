@@ -15,11 +15,13 @@ class BookingSummaryCard extends StatelessWidget {
         children: [
           Container(
             width: 60.w,
-            height:60.h,
+            height: 60.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.r),
               image: const DecorationImage(
-                image: NetworkImage('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500'), // Placeholder
+                image: NetworkImage(
+                  'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=500',
+                ), // Placeholder
                 fit: BoxFit.cover,
               ),
             ),
@@ -31,10 +33,7 @@ class BookingSummaryCard extends StatelessWidget {
               children: [
                 Text(
                   'Sunnyslade House',
-                  style: getBoldStyle(
-                    fontSize: 14.sp,
-                    color: AppColors.black,
-                  ),
+                  style: getBoldStyle(fontSize: 14.sp, color: AppColors.black),
                 ),
                 SizedBox(height: 4.h),
                 Text(
@@ -47,7 +46,11 @@ class BookingSummaryCard extends StatelessWidget {
                 SizedBox(height: 8.h),
                 Row(
                   children: [
-                    Icon(Icons.star_border, color: AppColors.black, size: 20.sp),
+                    Icon(
+                      Icons.star_border,
+                      color: AppColors.black,
+                      size: 20.sp,
+                    ),
                     SizedBox(width: 4.w),
                     Text(
                       '4.9 Rating',
