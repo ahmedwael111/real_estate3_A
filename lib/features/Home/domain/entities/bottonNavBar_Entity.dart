@@ -24,6 +24,7 @@ List<BottomNavigationBarEntity> get BottomNavBarItems => [
     "Favorite",
   ),
   BottomNavigationBarEntity(
+
     SvgPicture.asset(Assets.assetsMabNav, width: 24.w, height: 21.h,color: AppColors.splashColor,),
     SvgPicture.asset(Assets.assetsMabNav, width: 24.w, height: 21.h),
     "Mab",

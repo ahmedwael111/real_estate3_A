@@ -18,6 +18,8 @@ class Assets {
   static const String appleIcon = 'assets/apple_icon.svg';
   static const String chatHome = 'assets/chat_home.svg';
   static const String favNav = 'assets/fav_nav.svg';
+  static const String favOrange = 'assets/fav_orange.svg';
+  static const String favOrange2 = 'assets/fav_orange2.svg';
   static const String favProperty = 'assets/fav_property.svg';
   static const String filterHome = 'assets/filter_home.svg';
   static const String googleIcon = 'assets/google_icon.svg';
@@ -44,6 +46,8 @@ class Assets {
     appleIcon,
     chatHome,
     favNav,
+    favOrange,
+    favOrange2,
     favProperty,
     filterHome,
     googleIcon,

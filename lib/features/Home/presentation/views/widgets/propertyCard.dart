@@ -23,7 +23,6 @@ class PropertyCard extends StatelessWidget {
     return isWide ? _buildWideCard(context) : _buildNormalCard(context);
   }
 
-  // ── Normal card (Best Selling / Recommended) ──────────────────────────────
   Widget _buildNormalCard(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width.w;
     final height = MediaQuery.sizeOf(context).height.h;
@@ -47,7 +46,6 @@ class PropertyCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ── Image + badge ───────────────────────────────────
             Stack(
               children: [
                 ClipRRect(
@@ -72,7 +70,6 @@ class PropertyCard extends StatelessWidget {
               ],
             ),
 
-            // ── Details ─────────────────────────────────────────
             Padding(
               padding: EdgeInsets.all(10.r),
               child: Column(
@@ -106,7 +103,7 @@ class PropertyCard extends StatelessWidget {
                       ),
                       SizedBox(width: 4.w),
 
-                      /// Address (يتمدد)
+
                       Expanded(
                         child: Text(
                           property.address,
@@ -221,9 +218,9 @@ class PropertyCard extends StatelessWidget {
                           width: 170.w,
                           fit: BoxFit.cover,
                           errorBuilder: (_, __, ___) =>
-                              _imagePlaceholderSquare(100.w, 100.h),
+                              _imagePlaceholderSquare(170.w, 170.h),
                         )
-                      : _imagePlaceholderSquare(100.w, 100.h),
+                      : _imagePlaceholderSquare(170.w, 170.h),
                 ),
                 Positioned(
                   top: 10.h,

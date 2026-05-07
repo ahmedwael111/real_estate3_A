@@ -5,6 +5,8 @@ class Assets {
   static const String assetsAppleIcon = 'assets/apple_icon.svg';
   static const String assetsChatHome = 'assets/chat_home.svg';
   static const String assetsFavNav = 'assets/fav_nav.svg';
+  static const String assetsFavOrange = 'assets/fav_orange.svg';
+  static const String assetsFavOrange2 = 'assets/fav_orange2.svg';
   static const String assetsFavProperty = 'assets/fav_property.svg';
   static const String assetsFilterHome = 'assets/filter_home.svg';
   static const String assetsGoogleIcon = 'assets/google_icon.svg';

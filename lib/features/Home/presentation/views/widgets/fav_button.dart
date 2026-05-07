@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+
+import '../../../../../generated/assets.dart';
 import '../../../../Favorits/presentation/cubit/favorite_cubit.dart';
 import '../../../../Favorits/presentation/cubit/favorite_state.dart';
 
@@ -40,16 +43,22 @@ class FavButton extends StatelessWidget {
               child: child,
             ),
             child: isLoading
-                ? _PulsingHeart(key: const ValueKey('loading'), isFav: isFav)
-                : Icon(
-              isFav
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_border_rounded,
-              key: ValueKey(isFav),
-              size: 20.r,
-              color:
-              isFav ? Colors.redAccent : const Color(0xFF9CA3AF),
-            ),
+          ? _PulsingHeart(
+          key: const ValueKey('loading'),
+          isFav: isFav,
+        )
+            : SvgPicture.asset(
+        isFav ?
+
+            Assets.assetsFavProperty :Assets.assetsFavProperty  ,
+        key: ValueKey(isFav),
+        width: 20.w,
+        height: 20.h,
+             colorFilter: ColorFilter.mode(
+            isFav ? Colors.amberAccent : const Color(0xFF9CA3AF),
+            BlendMode.srcIn,
+          ),
+        ),
           ),
         );
       },
@@ -104,12 +113,18 @@ class _PulsingHeartState extends State<_PulsingHeart>
   Widget build(BuildContext context) {
     return ScaleTransition(
       scale: _scale,
-      child: Icon(
-        widget.isFav ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-        size: 20.r,
-        color: widget.isFav
-            ? Colors.redAccent.withOpacity(0.6)
-            : const Color(0xFF9CA3AF).withOpacity(0.6),
+      child: SvgPicture.asset(
+        widget.isFav ?
+
+             Assets.assetsFavProperty :Assets.assetsFavProperty,
+        width: 20.w,
+        height: 20.h,
+        colorFilter: ColorFilter.mode(
+          widget.isFav
+              ? Colors.amberAccent.withOpacity(0.6)
+              : const Color(0xFF9CA3AF).withOpacity(0.6),
+          BlendMode.srcIn,
+        ),
       ),
     );
   }

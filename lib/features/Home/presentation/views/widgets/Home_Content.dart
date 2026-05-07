@@ -62,7 +62,7 @@ class HomeContent extends StatelessWidget {
                     context,
                     BlocProvider.value(
                       value: context.read<FavoriteCubit>(),
-                      child: ViewAllScreen(title: "Featured", items: state.filteredBestSelling),
+                      child: ViewAllScreen(title: "Featured", items: state.filteredFeatured),
                     ),
                   );
                 },

@@ -1,0 +1,1320 @@
+import 'package:dio/dio.dart';
+
+import '../../../../core/api/dio_helper.dart';
+import '../models/profileModel.dart';
+
+abstract class ProfileRemoteDataSource {
+  Future<ProfileModel> getProfile();
+
+  Future<ProfileModel> updateProfile({
+    required String name,
+    required String location,
+    required String phone,
+  });
+
+  Future<String> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String passwordConfirmation,
+  });
+
+  Future<String> logout();
+}
+
+class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
+
+  @override
+  Future<ProfileModel> getProfile() async {
+    try {
+      final response = await DioHelper.getData(
+        url: '/api/v1/auth/me',
+        withAuth: true,
+      );
+
+      return ProfileModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to get profile',
+      );
+    }
+  }
+
+  @override
+  Future<ProfileModel> updateProfile({
+    required String name,
+    required String location,
+    required String phone,
+  }) async {
+    try {
+      final response = await DioHelper.putDataWithAuth(
+        url: '/api/v1/auth/profile',
+        withAuth: true,
+        data: {
+          'name': name,
+          'location': location,
+          'phone': phone,
+        },
+      );
+
+      return ProfileModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to update profile',
+      );
+    }
+  }
+
+  @override
+  Future<String> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required String passwordConfirmation,
+  }) async {
+    try {
+      final response = await DioHelper.putDataWithAuth(
+        url: '/api/v1/auth/password',
+        withAuth: true,
+        data: {
+          'current_password': currentPassword,
+          'password': newPassword,
+          'password_confirmation': passwordConfirmation,
+        },
+      );
+
+      return response.data['message'];
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to change password',
+      );
+    }
+  }
+
+  @override
+  Future<String> logout() async {
+    try {
+      final response = await DioHelper.postData(
+        url: '/api/v1/auth/logout',
+        withAuth: true,
+        data: {},
+      );
+
+      return response.data['message'];
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'Failed to logout',
+      );
+    }
+  }
+}
+import '../../domain/entity/profileEntity.dart';
+
+class ProfileModel extends ProfileEntity {
+  const ProfileModel({
+    required super.id,
+    required super.name,
+    required super.email,
+    required super.role,
+    required super.createdAt,
+  });
+
+  factory ProfileModel.fromJson(Map<String, dynamic> json) {
+    // Handles both wrapped {"data": {...}} and flat response
+    final data = json['data'] ?? json;
+    return ProfileModel(
+      id: data['id'] as int,
+      name: data['name'] as String,
+      email: data['email'] as String,
+      role: data['role'] as String,
+      createdAt: data['created_at'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'email': email,
+    'role': role,
+    'created_at': createdAt,
+  };
+}import 'package:dartz/dartz.dart';
+
+ import '../../domain/entity/profileEntity.dart';
+ import '../../domain/repo/profileRepo.dart';
+ import '../datasources/profileRemoteDataSource.dart';
+
+
+ class ProfileRepositoryImpl implements ProfileRepository {
+   final ProfileRemoteDataSource remoteDataSource;
+
+   ProfileRepositoryImpl({required this.remoteDataSource});
+
+   @override
+   Future<Either<String, ProfileEntity>> getProfile() async {
+     try {
+       final profile = await remoteDataSource.getProfile();
+       return Right(profile);
+     } catch (e) {
+       return Left(_parseError(e));
+     }
+   }
+
+   @override
+   Future<Either<String, ProfileEntity>> updateProfile({
+     required String name,
+     required String location,
+     required String phone,
+   }) async {
+     try {
+       final profile = await remoteDataSource.updateProfile(
+         name: name,
+         location: location,
+         phone: phone,
+       );
+       return Right(profile);
+     } catch (e) {
+       return Left(_parseError(e));
+     }
+   }
+
+   @override
+   Future<Either<String, String>> changePassword({
+     required String currentPassword,
+     required String newPassword,
+     required String passwordConfirmation,
+   }) async {
+     try {
+       final message = await remoteDataSource.changePassword(
+         currentPassword: currentPassword,
+         newPassword: newPassword,
+         passwordConfirmation: passwordConfirmation,
+       );
+       return Right(message);
+     } catch (e) {
+       return Left(_parseError(e));
+     }
+   }
+
+   @override
+   Future<Either<String, String>> logout() async {
+     try {
+       final message = await remoteDataSource.logout();
+       return Right(message);
+     } catch (e) {
+       return Left(_parseError(e));
+     }
+   }
+
+   String _parseError(Object e) {
+     final msg = e.toString();
+     if (msg.startsWith('Exception: ')) {
+       return msg.replaceFirst('Exception: ', '');
+     }
+     return msg;
+   }
+ }class ProfileEntity {
+    final int id;
+    final String name;
+    final String email;
+    final String role;
+    final String createdAt;
+
+    const ProfileEntity({
+      required this.id,
+      required this.name,
+      required this.email,
+      required this.role,
+      required this.createdAt,
+    });
+  }import 'package:dartz/dartz.dart';
+   import 'package:real_estate3_a/features/profile/domain/entity/profileEntity.dart';
+
+   abstract class ProfileRepository {
+     Future<Either<String, ProfileEntity>> getProfile();
+
+     Future<Either<String, ProfileEntity>> updateProfile({
+       required String name,
+       required String location,
+       required String phone,
+     });
+
+     Future<Either<String, String>> changePassword({
+       required String currentPassword,
+       required String newPassword,
+       required String passwordConfirmation,
+     });
+
+     Future<Either<String, String>> logout();
+   }import 'package:flutter_bloc/flutter_bloc.dart';
+    import 'package:real_estate3_a/features/profile/domain/repo/profileRepo.dart';
+
+    import 'profile_state.dart';
+
+    class ProfileCubit extends Cubit<ProfileState> {
+      final ProfileRepository profileRepository;
+
+      ProfileCubit({
+        required this.profileRepository,
+
+      }) : super(ProfileInitial());
+
+      Future<void> getProfile() async {
+        emit(ProfileLoading());
+        final result = await profileRepository.getProfile();
+        result.fold(
+              (error) => emit(ProfileError(error)),
+              (profile) => emit(ProfileLoaded(profile)),
+        );
+      }
+
+      Future<void> updateProfile({
+        required String name,
+        required String location,
+        required String phone,
+      }) async {
+        emit(UpdateProfileLoading());
+        final result = await profileRepository.updateProfile(name: name, location: location, phone: phone);
+
+        result.fold(
+              (error) => emit(UpdateProfileError(error)),
+              (profile) => emit(UpdateProfileSuccess(profile)),
+        );
+      }
+
+      Future<void> changePassword({
+        required String currentPassword,
+        required String newPassword,
+        required String passwordConfirmation,
+      }) async {
+        emit(ChangePasswordLoading());
+        final result = await profileRepository.changePassword(currentPassword: currentPassword,
+            newPassword: newPassword, passwordConfirmation: passwordConfirmation);
+        result.fold(
+              (error) => emit(ChangePasswordError(error)),
+              (message) => emit(ChangePasswordSuccess(message)),
+        );
+      }
+
+      Future<void> logout() async {
+        emit(LogoutLoading());
+        final result = await profileRepository.logout();
+        result.fold(
+              (error) => emit(LogoutError(error)),
+              (message) => emit(LogoutSuccess(message)),
+        );
+      }
+    }import 'package:equatable/equatable.dart';
+     import '../../domain/entity/profileEntity.dart';
+
+     abstract class ProfileState extends Equatable {
+       const ProfileState();
+
+       @override
+       List<Object?> get props => [];
+     }
+
+
+     class ProfileInitial extends ProfileState {}
+
+     class ProfileLoading extends ProfileState {}
+
+     class ProfileLoaded extends ProfileState {
+       final ProfileEntity profile;
+       const ProfileLoaded(this.profile);
+
+       @override
+       List<Object?> get props => [profile];
+     }
+
+     class ProfileError extends ProfileState {
+       final String message;
+       const ProfileError(this.message);
+
+       @override
+       List<Object?> get props => [message];
+     }
+
+
+     class UpdateProfileLoading extends ProfileState {}
+
+     class UpdateProfileSuccess extends ProfileState {
+       final ProfileEntity profile;
+       const UpdateProfileSuccess(this.profile);
+
+       @override
+       List<Object?> get props => [profile];
+     }
+
+     class UpdateProfileError extends ProfileState {
+       final String message;
+       const UpdateProfileError(this.message);
+
+       @override
+       List<Object?> get props => [message];
+     }
+
+
+     class ChangePasswordLoading extends ProfileState {}
+
+     class ChangePasswordSuccess extends ProfileState {
+       final String message;
+       const ChangePasswordSuccess(this.message);
+
+       @override
+       List<Object?> get props => [message];
+     }
+
+     class ChangePasswordError extends ProfileState {
+       final String message;
+       const ChangePasswordError(this.message);
+
+       @override
+       List<Object?> get props => [message];
+     }
+
+
+     class LogoutLoading extends ProfileState {}
+
+     class LogoutSuccess extends ProfileState {
+       final String message;
+       const LogoutSuccess(this.message);
+
+       @override
+       List<Object?> get props => [message];
+     }
+
+     class LogoutError extends ProfileState {
+       final String message;
+       const LogoutError(this.message);
+
+       @override
+       List<Object?> get props => [message];
+     }import 'package:flutter/material.dart';
+      import 'package:flutter_bloc/flutter_bloc.dart';
+      import 'package:real_estate3_a/core/di.dart';
+      import 'package:real_estate3_a/features/profile/domain/repo/profileRepo.dart';
+      import 'package:real_estate3_a/features/profile/presentation/cubit/profile_cubit.dart';
+      import 'package:real_estate3_a/features/profile/presentation/views/widgets/ProfileBlocConsumer.dart';
+
+      class ProfileView extends StatelessWidget {
+        const ProfileView({super.key});
+
+        @override
+        Widget build(BuildContext context) {
+          return  Scaffold(
+            body: BlocProvider(
+
+                create: (context) { return ProfileCubit(profileRepository: getIt<ProfileRepository>());
+                },
+                child: ProfileBlocConsumer()),
+          );
+        }
+      }import 'package:flutter/material.dart';
+       import 'package:flutter_bloc/flutter_bloc.dart';
+       import 'package:flutter_screenutil/flutter_screenutil.dart';
+       import 'package:real_estate3_a/features/profile/domain/entity/profileEntity.dart';
+
+       import '../../cubit/profile_cubit.dart';
+       import '../../cubit/profile_state.dart';
+       import 'ChangePasswordView.dart';
+       import 'EditProfileView.dart';
+       import 'ProfileInfoCard.dart';
+       import 'ProfileMenuItem.dart';
+
+       class ProfileViewBody1 extends StatelessWidget {
+         const ProfileViewBody1({
+           super.key,
+           required this.state,
+           required this.profile,
+         });
+         final ProfileState state;
+         final ProfileEntity profile;
+         @override
+         Widget build(BuildContext context) {
+           return SafeArea(
+             child: SingleChildScrollView(
+               padding: EdgeInsets.symmetric(
+                 horizontal: 20.w,
+                 vertical: 16.h,
+               ),
+               child: Column(
+                 crossAxisAlignment: CrossAxisAlignment.start,
+                 children: [
+
+                   Text(
+                     'Profile',
+                     style: TextStyle(
+                       fontSize: 24.sp,
+                       fontWeight: FontWeight.bold,
+                     ),
+                   ),
+
+                   SizedBox(height: 20.h),
+
+                   if (profile != null)
+                     ProfileInfoCard(profile: profile),
+
+                   SizedBox(height: 28.h),
+
+                   Text(
+                     'Account Settings',
+                     style: TextStyle(
+                       fontSize: 13.sp,
+                       fontWeight: FontWeight.w600,
+                     ),
+                   ),
+
+                   SizedBox(height: 10.h),
+
+                   Container(
+                     decoration: BoxDecoration(
+                       color: Colors.white,
+                       borderRadius: BorderRadius.circular(16.r),
+                     ),
+
+                     child: Column(
+                       children: [
+
+                         ProfileMenuItem(
+                           icon: Icons.person_outline_rounded,
+                           title: 'Edit Profile',
+                           subtitle:
+                           'Update your name, location & phone',
+
+                           onTap: profile == null
+                               ? null
+                               : () {
+                             Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 builder: (_) =>
+                                     BlocProvider.value(
+                                       value: context
+                                           .read<ProfileCubit>(),
+                                       child: EditProfileView(
+                                         profile: profile,
+                                       ),
+                                     ),
+                               ),
+                             );
+                           },
+                         ),
+
+                         Divider(),
+
+                         ProfileMenuItem(
+                           icon: Icons.lock_outline_rounded,
+                           title: 'Change Password',
+                           subtitle:
+                           'Update your account password',
+
+                           onTap: () {
+                             Navigator.push(
+                               context,
+                               MaterialPageRoute(
+                                 builder: (_) =>
+                                     BlocProvider.value(
+                                       value: context
+                                           .read<ProfileCubit>(),
+                                       child:
+                                       const ChangePasswordView(),
+                                     ),
+                               ),
+                             );
+                           },
+                         ),
+
+                         Divider(),
+
+                         ProfileMenuItem(
+                           icon: Icons.logout_rounded,
+                           title: 'Logout',
+                           subtitle:
+                           'Sign out of your account',
+
+                           isLoading: state is LogoutLoading,
+
+                           onTap: () {
+                             context
+                                 .read<ProfileCubit>()
+                                 .logout();
+                           },
+                         ),
+                       ],
+                     ),
+                   ),
+                 ],
+               ),
+             ),
+           );
+         }
+       }import 'package:flutter/material.dart';
+        import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+        class ProfileMenuItem extends StatelessWidget {
+          final IconData icon;
+          final String title;
+          final String subtitle;
+          final VoidCallback? onTap;
+          final Color iconColor;
+          final Color titleColor;
+          final bool showArrow;
+          final bool isLoading;
+
+          const ProfileMenuItem({
+            super.key,
+            required this.icon,
+            required this.title,
+            required this.subtitle,
+            this.onTap,
+            this.iconColor = const Color(0xffB8860B),
+            this.titleColor = const Color(0xff1A1A2E),
+            this.showArrow = true,
+            this.isLoading = false,
+          });
+
+          @override
+          Widget build(BuildContext context) {
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: isLoading ? null : onTap,
+                borderRadius: BorderRadius.circular(16.r),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+                  child: Row(
+                    children: [
+                      // ── Icon ─────────────────────────────────────────────────
+                      Container(
+                        width: 40.w,
+                        height: 40.h,
+                        decoration: BoxDecoration(
+                          color: iconColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Icon(icon, color: iconColor, size: 20.sp),
+                      ),
+                      SizedBox(width: 14.w),
+
+                      // ── Text ──────────────────────────────────────────────────
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                color: titleColor,
+                              ),
+                            ),
+                            SizedBox(height: 2.h),
+                            Text(
+                              subtitle,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // ── Trailing ─────────────────────────────────────────────
+                      if (isLoading)
+                        SizedBox(
+                          width: 18.w,
+                          height: 18.h,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: iconColor,
+                          ),
+                        )
+                      else if (showArrow)
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 14.sp,
+                          color: Colors.grey[400],
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }
+        }import 'package:flutter/material.dart';
+         import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+         import '../../../domain/entity/profileEntity.dart';
+
+         class ProfileInfoCard extends StatelessWidget {
+           final ProfileEntity profile;
+
+           const ProfileInfoCard({super.key, required this.profile});
+
+           @override
+           Widget build(BuildContext context) {
+             return Container(
+               width: double.infinity,
+               padding: EdgeInsets.all(20.r),
+               decoration: BoxDecoration(
+                 gradient: const LinearGradient(
+                   colors: [Color(0xffB8860B), Color(0xffDAA520)],
+                   begin: Alignment.topLeft,
+                   end: Alignment.bottomRight,
+                 ),
+                 borderRadius: BorderRadius.circular(20.r),
+                 boxShadow: [
+                   BoxShadow(
+                     color: const Color(0xffB8860B).withOpacity(0.3),
+                     blurRadius: 16,
+                     offset: const Offset(0, 6),
+                   ),
+                 ],
+               ),
+               child: Row(
+                 children: [
+                   // ── Avatar ──────────────────────────────────────────────────
+                   CircleAvatar(
+                     radius: 32.r,
+                     backgroundColor: Colors.white.withOpacity(0.2),
+                     child: Text(
+                       profile.name.isNotEmpty
+                           ? profile.name[0].toUpperCase()
+                           : '?',
+                       style: TextStyle(
+                         fontSize: 28.sp,
+                         color: Colors.white,
+                         fontWeight: FontWeight.bold,
+                       ),
+                     ),
+                   ),
+                   SizedBox(width: 16.w),
+
+                   // ── Info ─────────────────────────────────────────────────────
+                   Expanded(
+                     child: Column(
+                       crossAxisAlignment: CrossAxisAlignment.start,
+                       children: [
+                         Text(
+                           profile.name,
+                           style: TextStyle(
+                             fontSize: 17.sp,
+                             fontWeight: FontWeight.bold,
+                             color: Colors.white,
+                           ),
+                           maxLines: 1,
+                           overflow: TextOverflow.ellipsis,
+                         ),
+                         SizedBox(height: 4.h),
+                         Text(
+                           profile.email,
+                           style: TextStyle(
+                             fontSize: 12.sp,
+                             color: Colors.white.withOpacity(0.85),
+                           ),
+                           maxLines: 1,
+                           overflow: TextOverflow.ellipsis,
+                         ),
+                         SizedBox(height: 8.h),
+                         Container(
+                           padding:
+                           EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                           decoration: BoxDecoration(
+                             color: Colors.white.withOpacity(0.2),
+                             borderRadius: BorderRadius.circular(20.r),
+                           ),
+                           child: Text(
+                             profile.role.toUpperCase(),
+                             style: TextStyle(
+                               fontSize: 10.sp,
+                               color: Colors.white,
+                               fontWeight: FontWeight.w600,
+                               letterSpacing: 0.8,
+                             ),
+                           ),
+                         ),
+                       ],
+                     ),
+                   ),
+                 ],
+               ),
+             );
+           }
+         }import 'package:flutter/material.dart';
+          import 'package:flutter_bloc/flutter_bloc.dart';
+          import 'package:real_estate3_a/features/profile/presentation/views/widgets/profileViewBody.dart';
+
+          import '../../cubit/profile_cubit.dart';
+          import '../../cubit/profile_state.dart';
+
+
+          class ProfileBlocConsumer extends StatefulWidget {
+            const ProfileBlocConsumer({super.key});
+
+            @override
+            State<ProfileBlocConsumer> createState() =>
+                _ProfileBlocConsumerState();
+          }
+
+          class _ProfileBlocConsumerState
+              extends State<ProfileBlocConsumer> {
+
+            @override
+            void initState() {
+              super.initState();
+              context.read<ProfileCubit>().getProfile();
+            }
+
+            @override
+            Widget build(BuildContext context) {
+              return BlocConsumer<ProfileCubit, ProfileState>(
+                listener: (context, state) {
+
+                  if (state is LogoutSuccess) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+                  }
+
+                  if (state is LogoutError) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(state.message),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+
+                  if (state is UpdateProfileSuccess) {
+                    context.read<ProfileCubit>().getProfile();
+                  }
+                },
+
+                builder: (context, state) {
+
+                  if (state is ProfileLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  if (state is ProfileError) {
+                    return Center(
+                      child: Text(state.message),
+                    );
+                  }
+
+                  final profile = state is ProfileLoaded
+                      ? state.profile
+                      : state is UpdateProfileSuccess
+                      ? state.profile
+                      : null;
+                  if (profile == null) {
+                    return const SizedBox();
+                  }
+                  return ProfileViewBody1(
+                    state: state,
+                    profile:profile
+                  );
+                },
+              );
+            }
+          }import 'package:flutter/material.dart';
+           import 'package:flutter_bloc/flutter_bloc.dart';
+           import 'package:flutter_screenutil/flutter_screenutil.dart';
+           import 'package:real_estate3_a/core/constant/custom_textformfield.dart';
+
+           import '../../../domain/entity/profileEntity.dart';
+           import '../../cubit/profile_cubit.dart';
+           import '../../cubit/profile_state.dart';
+
+           class EditProfileView extends StatefulWidget {
+             final ProfileEntity profile;
+
+             const EditProfileView({super.key, required this.profile});
+
+             @override
+             State<EditProfileView> createState() => _EditProfileViewState();
+           }
+
+           class _EditProfileViewState extends State<EditProfileView> {
+             final _formKey = GlobalKey<FormState>();
+             late final TextEditingController _nameController;
+             late final TextEditingController _locationController;
+             late final TextEditingController _phoneController;
+
+             @override
+             void initState() {
+               super.initState();
+               _nameController = TextEditingController(text: widget.profile.name);
+               _locationController = TextEditingController();
+               _phoneController = TextEditingController();
+             }
+
+             @override
+             void dispose() {
+               _nameController.dispose();
+               _locationController.dispose();
+               _phoneController.dispose();
+               super.dispose();
+             }
+
+             void _submit() {
+               if (!_formKey.currentState!.validate()) return;
+               context.read<ProfileCubit>().updateProfile(
+                 name: _nameController.text.trim(),
+                 location: _locationController.text.trim(),
+                 phone: _phoneController.text.trim(),
+               );
+             }
+
+             @override
+             Widget build(BuildContext context) {
+               return Scaffold(
+                 backgroundColor: const Color(0xffFAF9F6),
+                 appBar: AppBar(
+                   backgroundColor: Colors.transparent,
+                   elevation: 0,
+                   leading: IconButton(
+                     icon: Icon(
+                       Icons.arrow_back_ios_new_rounded,
+                       size: 20.sp,
+                       color: const Color(0xff1A1A2E),
+                     ),
+                     onPressed: () => Navigator.pop(context),
+                   ),
+                   title: Text(
+                     'Edit Profile',
+                     style: TextStyle(
+                       fontSize: 18.sp,
+                       fontWeight: FontWeight.bold,
+                       color: const Color(0xff1A1A2E),
+                     ),
+                   ),
+                   centerTitle: true,
+                 ),
+                 body: BlocConsumer<ProfileCubit, ProfileState>(
+                   listener: (context, state) {
+                     if (state is UpdateProfileSuccess) {
+                       ScaffoldMessenger.of(context).showSnackBar(
+                         SnackBar(
+                           content: const Text('Profile updated successfully!'),
+                           backgroundColor: Colors.green,
+                           behavior: SnackBarBehavior.floating,
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(8.r),
+                           ),
+                         ),
+                       );
+                       Navigator.pop(context);
+                     }
+                     if (state is UpdateProfileError) {
+                       ScaffoldMessenger.of(context).showSnackBar(
+                         SnackBar(
+                           content: Text(state.message),
+                           backgroundColor: Colors.red,
+                           behavior: SnackBarBehavior.floating,
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(8.r),
+                           ),
+                         ),
+                       );
+                     }
+                   },
+                   builder: (context, state) {
+                     final isLoading = state is UpdateProfileLoading;
+                     return SingleChildScrollView(
+                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+                       child: Form(
+                         key: _formKey,
+                         child: Column(
+                           children: [
+                             // ── Avatar ───────────────────────────────────────────
+                             Center(
+                               child: Stack(
+                                 children: [
+                                   CircleAvatar(
+                                     radius: 50.r,
+                                     backgroundColor: const Color(0xffB8860B),
+                                     child: Text(
+                                       widget.profile.name.isNotEmpty
+                                           ? widget.profile.name[0].toUpperCase()
+                                           : '?',
+                                       style: TextStyle(
+                                         fontSize: 36.sp,
+                                         color: Colors.white,
+                                         fontWeight: FontWeight.bold,
+                                       ),
+                                     ),
+                                   ),
+                                   Positioned(
+                                     bottom: 0,
+                                     right: 0,
+                                     child: Container(
+                                       padding: EdgeInsets.all(6.r),
+                                       decoration: const BoxDecoration(
+                                         color: Color(0xffB8860B),
+                                         shape: BoxShape.circle,
+                                       ),
+                                       child: Icon(
+                                         Icons.camera_alt_rounded,
+                                         size: 14.sp,
+                                         color: Colors.white,
+                                       ),
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                             SizedBox(height: 8.h),
+                             Text(
+                               widget.profile.email,
+                               style: TextStyle(fontSize: 13.sp, color: Colors.grey[500]),
+                             ),
+
+                             SizedBox(height: 32.h),
+
+                             // ── Fields ───────────────────────────────────────────
+                             CustomTextformfeild(
+                               controller: _nameController,
+                               labelText: 'Full Name',
+                               hintText: 'Enter your full name',
+                               prefixIcon: Icon(Icons.person),
+                               validator: (v) => (v == null || v.trim().isEmpty)
+                                   ? 'Name is required'
+                                   : null,
+                               keyboardType: null,
+                               formFieldKey: null,
+                             ),
+                             SizedBox(height: 16.h),
+                             CustomTextformfeild(
+                               controller: _locationController,
+                               labelText: 'Location',
+                               hintText: 'e.g. Cairo, Egypt',
+                               prefixIcon: Icon(Icons.location_on),
+                               keyboardType: TextInputType.text,
+                               validator: (p0) {},
+                               formFieldKey: null,
+                             ),
+                             SizedBox(height: 16.h),
+                             CustomTextformfeild(
+                               controller: _phoneController,
+                               labelText: 'Phone',
+                               hintText: '+20 1XX XXX XXXX',
+                               prefixIcon:Icon(Icons.phone_outlined) ,
+                               keyboardType: TextInputType.phone,
+                               validator: (p0) {},
+                               formFieldKey: null,
+                             ),
+
+                             SizedBox(height: 32.h),
+
+                             // ── Save Button ──────────────────────────────────────
+                             SizedBox(
+                               width: double.infinity,
+                               height: 52.h,
+                               child: ElevatedButton(
+                                 onPressed: isLoading ? null : _submit,
+                                 style: ElevatedButton.styleFrom(
+                                   backgroundColor: const Color(0xffB8860B),
+                                   disabledBackgroundColor: const Color(
+                                     0xffB8860B,
+                                   ).withOpacity(0.6),
+                                   shape: RoundedRectangleBorder(
+                                     borderRadius: BorderRadius.circular(14.r),
+                                   ),
+                                   elevation: 0,
+                                 ),
+                                 child: isLoading
+                                     ? SizedBox(
+                                         width: 22.w,
+                                         height: 22.h,
+                                         child: const CircularProgressIndicator(
+                                           color: Colors.white,
+                                           strokeWidth: 2,
+                                         ),
+                                       )
+                                     : Text(
+                                         'Save Changes',
+                                         style: TextStyle(
+                                           fontSize: 15.sp,
+                                           fontWeight: FontWeight.w600,
+                                           color: Colors.white,
+                                         ),
+                                       ),
+                               ),
+                             ),
+                           ],
+                         ),
+                       ),
+                     );
+                   },
+                 ),
+               );
+             }
+           }
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../core/constant/custom_textformfield.dart';
+import '../../cubit/profile_cubit.dart';
+import '../../cubit/profile_state.dart';
+
+
+class ChangePasswordView extends StatefulWidget {
+  const ChangePasswordView({super.key});
+
+  @override
+  State<ChangePasswordView> createState() => _ChangePasswordViewState();
+}
+
+class _ChangePasswordViewState extends State<ChangePasswordView> {
+  final _formKey = GlobalKey<FormState>();
+  final _currentPasswordController = TextEditingController();
+  final _newPasswordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
+
+  bool _obscureCurrent = true;
+  bool _obscureNew = true;
+  bool _obscureConfirm = true;
+
+  @override
+  void dispose() {
+    _currentPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    context.read<ProfileCubit>().changePassword(
+      currentPassword: _currentPasswordController.text.trim(),
+      newPassword: _newPasswordController.text.trim(),
+      passwordConfirmation: _confirmPasswordController.text.trim(),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xffFAF9F6),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              size: 20.sp, color: const Color(0xff1A1A2E)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Change Password',
+          style: TextStyle(
+            fontSize: 18.sp,
+            fontWeight: FontWeight.bold,
+            color: const Color(0xff1A1A2E),
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: BlocConsumer<ProfileCubit, ProfileState>(
+        listener: (context, state) {
+          if (state is ChangePasswordSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+            );
+            Navigator.pop(context);
+          }
+          if (state is ChangePasswordError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          final isLoading = state is ChangePasswordLoading;
+          return SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // ── Illustration ─────────────────────────────────────
+                  Center(
+                    child: Container(
+                      width: 90.w,
+                      height: 90.h,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffB8860B).withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.lock_outline_rounded,
+                        size: 44.sp,
+                        color: const Color(0xffB8860B),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  Center(
+                    child: Text(
+                      'Keep your account secure',
+                      style: TextStyle(
+                        fontSize: 13.sp,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 32.h),
+
+                  // ── Fields ───────────────────────────────────────────
+                  CustomTextformfeild(
+                    keyboardType: TextInputType.visiblePassword,
+                    formFieldKey: UniqueKey(),
+                    controller: _currentPasswordController,
+                    labelText: 'Current Password',
+                    hintText: 'Enter current password',
+                    prefixIcon:Icon(Icons.lock_outline_rounded) ,
+                    isPassword: _obscureCurrent,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureCurrent
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 20.sp,
+                        color: Colors.grey[400],
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscureCurrent = !_obscureCurrent),
+                    ),
+                    validator: (v) => (v == null || v.isEmpty)
+                        ? 'Current password is required'
+                        : null,
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextformfeild(
+                    formFieldKey: UniqueKey(),
+                    keyboardType: TextInputType.visiblePassword,
+                    controller: _newPasswordController,
+                    labelText: 'New Password',
+                    hintText: 'Min. 8 characters',
+                    prefixIcon:Icon(Icons.lock_reset_rounded) ,
+                    isPassword: _obscureNew,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureNew
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 20.sp,
+                        color: Colors.grey[400],
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscureNew = !_obscureNew),
+                    ),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'New password is required';
+                      }
+                      if (v.length < 8) {
+                        return 'Password must be at least 8 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16.h),
+                  CustomTextformfeild(
+                    keyboardType:TextInputType.visiblePassword ,
+                    formFieldKey: UniqueKey(),
+                    controller: _confirmPasswordController,
+                    labelText: 'Confirm New Password',
+                    hintText: 'Re-enter new password',
+                    prefixIcon:Icon(Icons.check_circle_outline_rounded) ,
+                    isPassword: _obscureConfirm,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureConfirm
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                        size: 20.sp,
+                        color: Colors.grey[400],
+                      ),
+                      onPressed: () =>
+                          setState(() => _obscureConfirm = !_obscureConfirm),
+                    ),
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Please confirm your new password';
+                      }
+                      if (v != _newPasswordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  SizedBox(height: 32.h),
+
+                  // ── Submit ───────────────────────────────────────────
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52.h,
+                    child: ElevatedButton(
+                      onPressed: isLoading ? null : _submit,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xffB8860B),
+                        disabledBackgroundColor:
+                        const Color(0xffB8860B).withOpacity(0.6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14.r),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: isLoading
+                          ? SizedBox(
+                        width: 22.w,
+                        height: 22.h,
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                          : Text(
+                        'Update Password',
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
