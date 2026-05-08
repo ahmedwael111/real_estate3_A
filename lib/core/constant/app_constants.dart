@@ -1,6 +1,6 @@
 class AppConstants {
   // API Configuration
-  static const String KhamnyBaseUrl = 'https://washing-cars.storage-te.com';
+  static const String realStateBaseUrl = 'https://real.newcinderella.online';
 
   // Auth Endpoints
   static const String registerEndpoint = '/api/auth/register';
@@ -13,7 +13,7 @@ class AppConstants {
       '/api/auth/change-password-with-restpassword-otp';
 
   // Dynamic Endpoints
-  static const String citiesEndpoint = '/api/dynamic/cities';
+  static const String getPropertyDetailsEndpoint = '/api/v1/properties/';
 
   // Address Endpoints
   static const String addressesEndpoint = '/api/addresses';
