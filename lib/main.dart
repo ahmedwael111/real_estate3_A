@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:real_estate3_a/Features/Property%20Details/presentaion/property_details_view.dart';
 import 'package:real_estate3_a/core/di.dart';
 
 void main() {
@@ -13,14 +14,8 @@ class RealStateApp3A extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Real Estate 3A',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Welcome to Real Estate 3A!'),
-        ),
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: PropertyDetailsView(),
     );
   }
 }
