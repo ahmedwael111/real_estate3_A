@@ -201,9 +201,9 @@ class CustomReviewAppBar extends StatelessWidget
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      backgroundColor: Colors.grey[100],
-      elevation: 1,
-      shadowColor: Colors.black45,
+      backgroundColor: Colors.white,
+      elevation: 0.5,
+      shadowColor: Colors.black,
       flexibleSpace: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),

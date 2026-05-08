@@ -22,8 +22,8 @@ class RealStateApp3A extends StatelessWidget {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Real Estate 3A',
-          theme: ThemeData(primarySwatch: Colors.blue),
-          home: PropertyDetailsView (),
+          theme: ThemeData(scaffoldBackgroundColor: Colors.white),
+          home: PropertyDetailsView(),
         );
       },
     );

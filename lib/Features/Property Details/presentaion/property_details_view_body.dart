@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/view_360_view.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/widgets/review_details_section.dart';
@@ -54,7 +55,6 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: _showAppBar
           ? AppBar(
               toolbarHeight: 94,
@@ -72,7 +72,7 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _circleIcon(Icons.arrow_back),
+                      _circleIcon(Icon(Icons.arrow_back, size: 24)),
                       const Text(
                         "Property Details",
                         style: TextStyle(
@@ -91,7 +91,9 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
                             ),
                           );
                         },
-                        child: _circleIcon(Icons.notifications_none),
+                        child: _circleIcon(
+                          Image.asset(Assets.assetsShareIcon, scale: 2),
+                        ),
                       ),
                     ],
                   ),
@@ -207,6 +209,8 @@ class HeaderSection extends StatelessWidget {
           top: 40,
           right: 16,
           child: Container(
+            height: 40,
+            width: 40,
             padding: const EdgeInsets.all(8),
             decoration: ShapeDecoration(
               color: Colors.white.withValues(alpha: 0.24),
@@ -215,7 +219,7 @@ class HeaderSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
-            child: Icon(Icons.share, color: Colors.white),
+            child: Image.asset(Assets.assetsShereIconWhite, scale: 2),
           ),
         ),
         Positioned(
@@ -453,6 +457,7 @@ class AgentSection extends StatelessWidget {
 class MapSection extends StatelessWidget {
   const MapSection({super.key, required this.propertyDetailsEntity});
   final PropertyDetailsEntity propertyDetailsEntity;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -472,9 +477,37 @@ class MapSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 10),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: CustomPngImage(path: Assets.assetsMapPlaceholder),
+          Container(
+            height: 200,
+            width: double.infinity,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(
+                  propertyDetailsEntity.latitude ?? 30.057960270643694,
+                  propertyDetailsEntity.longitude ?? 31.38304607580413,
+                ),
+                zoom: 13,
+              ),
+              markers: {
+                Marker(
+                  markerId: MarkerId('property_location'),
+                  position: LatLng(
+                    propertyDetailsEntity.latitude ?? 30.057960270643694,
+                    propertyDetailsEntity.longitude ?? 31.38304607580413,
+                  ),
+                  infoWindow: InfoWindow(
+                    title: propertyDetailsEntity.title ?? "Property Location",
+                  ),
+                ),
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              // onMapCreated: (GoogleMapController controller) {
+              //   _controller.complete(controller);
+              // },
+            ),
           ),
         ],
       ),
@@ -770,7 +803,7 @@ class BottomButtons extends StatelessWidget {
   }
 }
 
-Widget _circleIcon(IconData icon) {
+Widget _circleIcon(Widget widget) {
   return Container(
     width: 40,
     height: 40,
@@ -778,6 +811,6 @@ Widget _circleIcon(IconData icon) {
       shape: BoxShape.circle,
       border: Border.all(color: Colors.black),
     ),
-    child: Icon(icon, size: 24),
+    child: widget,
   );
 }
