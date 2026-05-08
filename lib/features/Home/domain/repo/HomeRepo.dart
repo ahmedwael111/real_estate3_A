@@ -1,0 +1,9 @@
+import 'package:dartz/dartz.dart';
+import '../../../../core/errors/failure.dart';
+import '../entities/home_dateEntity.dart';
+
+
+abstract class HomeRepository {
+
+  Future<Either<Failure, HomeDataEntity>> getHomeData();
+}

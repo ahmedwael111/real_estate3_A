@@ -153,16 +153,16 @@ class _CustomTextformfeildState extends State<CustomTextformfeild> {
         helperText: null,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
-          borderSide: BorderSide(color: AppColors.borderColor, width: 1),
+          borderSide: BorderSide(color: AppColors.bordergrey, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
-          borderSide: BorderSide(color: AppColors.borderColor, width: 1),
+          borderSide: BorderSide(color: AppColors.bordergrey, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
           borderSide: const BorderSide(
-            color: AppColors.primaryColor,
+            color: AppColors.bordergrey,
             width: 1.5,
           ),
         ),

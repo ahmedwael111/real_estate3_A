@@ -1,10 +1,13 @@
 class AppConstants {
   // API Configuration
-  static const String KhamnyBaseUrl = 'https://washing-cars.storage-te.com';
+  static const String BaseUrl = 'https://real.newcinderella.online';
 
+//                            163|qKnyfUm7VxkFqUE4WsXsCO3EayRUawd9VaEcLYLnfa197f5a
   // Auth Endpoints
-  static const String registerEndpoint = '/api/auth/register';
-  static const String loginEndpoint = '/api/auth/login';
+  static const String registerEndpoint = '/api/v1/auth/register';
+  static const String loginEndpoint = '/api/v1/auth/login';
+  static const String favorites = '/api/v1/favorites';
+  static const String home = '/api/v1/home';
   static const String sendResetPasswordOtpEndpoint =
       '/api/auth/send-restpassword-otp';
   static const String verifyResetPasswordOtpEndpoint =
