@@ -45,6 +45,7 @@ class SignIn_textFields extends StatelessWidget {
           controller: passwordController,
           hintText: "Enter your password",
           labelText: "password",
+          isPassword: true,
           validator: (value) {
             if (value == null || value.isEmpty) {
               return "Email is required";

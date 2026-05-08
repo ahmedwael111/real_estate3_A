@@ -1,0 +1,2169 @@
+import 'package:dio/dio.dart';
+import 'package:real_estate3_a/core/constant/app_constants.dart';
+import '../../../../core/api/dio_helper.dart';
+import '../../../../core/errors/failure.dart';
+import '../models/homeDataModel.dart';
+
+abstract class HomeRemoteDataSource {
+  Future<HomeDataModel> getHomeData();
+}
+
+class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
+
+  const HomeRemoteDataSourceImpl();
+
+  @override
+  Future<HomeDataModel> getHomeData() async {
+    try {
+      final response = await DioHelper.getData(
+        url: AppConstants.home,
+        withAuth: false,
+      );
+      print(response.data);
+      return HomeDataModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
+
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ServiceFailure(message: e.toString());
+    }
+  }
+
+  Failure _handleDioError(DioException e) {
+    if (e.type == DioExceptionType.connectionTimeout ||
+        e.type == DioExceptionType.receiveTimeout ||
+        e.type == DioExceptionType.connectionError) {
+      return NoInternetFailure(message: 'No Internet Connection');
+    }
+
+    if (e.response != null) {
+      return ApiFailure(
+        message: e.response?.data?['message'] ?? 'Server Error',
+      );
+    }
+
+    return ServiceFailure(message: e.message ?? 'Unexpected Error');
+  }
+}import '../../domain/entities/categoryEntity.dart';
+
+ class CategoryModel {
+   final int id;
+   final String name;
+   final String slug;
+   final String description;
+   final int sortOrder;
+
+
+   const CategoryModel({
+     required this.id,
+     required this.name,
+     required this.slug,
+     required this.description,
+     required this.sortOrder,
+   });
+
+   factory CategoryModel.fromJson(Map<String, dynamic> json) => CategoryModel(
+     id: json['id'] ?? 0,
+     name: json['name']?.toString() ?? '',
+     slug: json['slug']?.toString() ?? '',
+     description: json['description']?.toString() ?? '',
+     sortOrder: json['sort_order'] ?? 0,
+   );
+
+   CategoryEntity toEntity() => CategoryEntity(
+
+     id: id,
+     name: name,
+     slug: slug,
+     description: description,
+     sortOrder: sortOrder,
+   );
+ }
+
+import 'package:real_estate3_a/features/Home/data/models/propertyCardModel.dart';
+
+import '../../domain/entities/home_dateEntity.dart';
+import 'categoryModel.dart';
+
+class HomeDataModel {
+  final List<CategoryModel> categories;
+  final List<PropertyCardModel> bestSelling;
+  final List<PropertyCardModel> featured;
+  final List<PropertyCardModel> recommended;
+
+  const HomeDataModel({
+    required this.categories,
+    required this.bestSelling,
+    required this.featured,
+    required this.recommended,
+  });
+
+
+  factory HomeDataModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] as Map<String, dynamic>;
+
+    return HomeDataModel(
+      categories: (data['categories'] as List<dynamic>)
+          .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      bestSelling: (data['best_selling'] as List<dynamic>)
+          .map((e) => PropertyCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      featured: (data['featured'] as List<dynamic>)
+          .map((e) => PropertyCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      recommended: (data['recommended'] as List<dynamic>)
+          .map((e) => PropertyCardModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  HomeDataEntity toEntity() => HomeDataEntity(
+    categories: categories.map((e) => e.toEntity()).toList(),
+    bestSelling: bestSelling.map((e) => e.toEntity()).toList(),
+    featured: featured.map((e) => e.toEntity()).toList(),
+    recommended: recommended.map((e) => e.toEntity()).toList(),
+  );
+}
+import '../../domain/entities/property_cardEntity.dart';
+import 'categoryModel.dart';
+
+class PropertyCardModel {
+  final int id;
+  final String title;
+  final String slug;
+  final double price;
+  final ListingType listingType;
+
+
+  final String address;
+  final String? thumbnailUrl;
+  final CategoryModel category;
+  final String agentName;
+
+  const PropertyCardModel({
+    required this.id,
+    required this.title,
+    required this.slug,
+    required this.price,
+    required this.listingType,
+
+    required this.address,
+    this.thumbnailUrl,
+    required this.category,
+    required this.agentName,
+  });
+
+  factory PropertyCardModel.fromJson(Map<String, dynamic> json) {
+
+    final images = (json['images'] as List<dynamic>?) ?? [];
+    images.sort((a, b) =>
+        ((a['sort_order'] as int?) ?? 0).compareTo((b['sort_order'] as int?) ?? 0));
+    final thumbnailUrl =
+    images.isNotEmpty ? images.first['url'] as String? : null;
+
+
+    final agent = json['agent'] as Map<String, dynamic>? ?? {};
+    final agentUser = agent['user'] as Map<String, dynamic>? ?? {};
+    final agentName = agentUser['name'] as String? ?? '';
+
+    return PropertyCardModel(
+      id: json['id'] as int,
+      title: json['title'] as String,
+      slug: json['slug'] as String,
+      price: double.parse(json['price'].toString()),
+      listingType: (json['listing_type'] as String) == 'rent'
+          ? ListingType.rent
+          : ListingType.sale,
+
+      address: json['address'] as String,
+      thumbnailUrl: thumbnailUrl,
+      category: CategoryModel.fromJson(
+          json['category'] as Map<String, dynamic>),
+      agentName: agentName,
+    );
+  }
+
+  PropertyCardEntity toEntity() => PropertyCardEntity(
+    id: id,
+    title: title,
+    slug: slug,
+    price: price,
+    listingType:listingType,
+
+    address: address,
+    thumbnailUrl: thumbnailUrl,
+    category: category.toEntity(),
+    agentName: agentName,
+  );
+}  import 'package:dartz/dartz.dart';
+
+   import '../../../../core/errors/failure.dart';
+   import '../../domain/entities/home_dateEntity.dart';
+   import '../../domain/repo/HomeRepo.dart';
+   import '../RemoteDataSource/HomeRemoteDataSource.dart';
+
+   class HomeRepositoryImpl implements HomeRepository {
+     final HomeRemoteDataSource remote;
+
+     const HomeRepositoryImpl(this.remote);
+
+     @override
+     Future<Either<Failure, HomeDataEntity>> getHomeData() async {
+       try {
+         final result = await remote.getHomeData();
+         return Right(result.toEntity());
+       } on Failure catch (f) {
+         return Left(f);
+       } catch (e) {
+         return Left(ServiceFailure(message: e.toString()));
+       }
+     }
+   }part of 'home_cubit.dart';
+
+    abstract class HomeState extends Equatable {
+      const HomeState();
+      @override
+      List<Object?> get props => [];
+    }
+
+    class HomeInitial extends HomeState {}
+
+    class HomeLoading extends HomeState {}
+
+    class HomeLoaded extends HomeState {
+      final HomeDataEntity homeData;
+
+      // الـ lists دي بعد الـ search + filter
+      final List<PropertyCardEntity> filteredBestSelling;
+      final List<PropertyCardEntity> filteredFeatured;
+      final List<PropertyCardEntity> filteredRecommended;
+
+      // عشان الـ UI يعرف يعرض الـ active state
+      final String searchQuery;
+      final int selectedCategoryId;
+      final String? selectedListingType;
+      final double? minPrice;
+      final double? maxPrice;
+
+      const HomeLoaded({
+        required this.homeData,
+        required this.filteredBestSelling,
+        required this.filteredFeatured,
+        required this.filteredRecommended,
+        required this.searchQuery,
+        required this.selectedCategoryId,
+        this.selectedListingType,
+        this.minPrice,
+        this.maxPrice,
+      });
+
+      bool get hasActiveFilter =>
+          selectedListingType != null || minPrice != null || maxPrice != null;
+
+      @override
+      List<Object?> get props => [
+        filteredBestSelling,
+        filteredFeatured,
+        filteredRecommended,
+        searchQuery,
+        selectedCategoryId,
+        selectedListingType,
+        minPrice,
+        maxPrice,
+      ];
+    }
+
+    class HomeError extends HomeState {
+      final String message;
+      const HomeError({required this.message});
+      @override
+      List<Object?> get props => [message];
+    }import 'package:flutter_bloc/flutter_bloc.dart';
+     import 'package:equatable/equatable.dart';
+     import '../../domain/entities/home_dateEntity.dart';
+     import '../../domain/entities/property_cardEntity.dart';
+     import '../../domain/repo/HomeRepo.dart';
+
+     part 'home_state.dart';
+
+     class HomeCubit extends Cubit<HomeState> {
+       final HomeRepository _homeRepository;
+
+       HomeCubit(this._homeRepository) : super(HomeInitial());
+
+       HomeDataEntity? _rawData;
+
+       String _searchQuery = '';
+       int _selectedCategoryId = -1; // -1 = All
+       String? _selectedListingType; // null | 'sale' | 'rent'
+       double? _minPrice;
+       double? _maxPrice;
+
+       String get searchQuery => _searchQuery;
+       int get selectedCategoryId => _selectedCategoryId;
+       String? get selectedListingType => _selectedListingType;
+       double? get minPrice => _minPrice;
+       double? get maxPrice => _maxPrice;
+       bool get hasActiveFilter =>
+           _selectedListingType != null || _minPrice != null || _maxPrice != null;
+
+       // ── Fetch ─────────────────────────────────────────────────────────────────
+       Future<void> getHomeData() async {
+         emit(HomeLoading());
+         final result = await _homeRepository.getHomeData();
+         result.fold(
+               (failure) => emit(HomeError(message: failure.message)),
+               (data) {
+             _rawData = data;
+             _emitFiltered();
+           },
+         );
+       }
+
+
+       // ── Search ────────────────────────────────────────────────────────────────
+       void onSearchChanged(String query) {
+         _searchQuery = query.trim().toLowerCase();
+         _emitFiltered();
+       }
+
+       // ── Category ──────────────────────────────────────────────────────────────
+       void onCategorySelected(int categoryId) {
+         _selectedCategoryId = categoryId; // -1 = All
+         _emitFiltered();
+       }
+       // ── Filter ────────────────────────────────────────────────────────────────
+       void applyFilter({
+         String? listingType,
+         double? minPrice,
+         double? maxPrice,
+       }) {
+         _selectedListingType = listingType;
+         _minPrice = minPrice;
+         _maxPrice = maxPrice;
+         _emitFiltered();
+       }
+
+       void clearFilter() {
+         _selectedListingType = null;
+         _minPrice = null;
+         _maxPrice = null;
+         _emitFiltered();
+       }
+
+       // ── Core ──────────────────────────────────────────────────────────────────
+       void _emitFiltered() {
+         if (_rawData == null) return;
+         emit(HomeLoaded(
+           homeData: _rawData!,
+           filteredBestSelling: _applyFilters(_rawData!.bestSelling),
+           filteredFeatured: _applyFilters(_rawData!.featured),
+           filteredRecommended: _applyFilters(_rawData!.recommended),
+           searchQuery: _searchQuery,
+           selectedCategoryId: _selectedCategoryId,
+           selectedListingType: _selectedListingType,
+           minPrice: _minPrice,
+           maxPrice: _maxPrice,
+         ));
+       }
+
+       List<PropertyCardEntity> _applyFilters(List<PropertyCardEntity> items) {
+         return items.where((p) {
+           if (_searchQuery.isNotEmpty) {
+             final hit = p.title.toLowerCase().contains(_searchQuery) ||
+                 p.address.toLowerCase().contains(_searchQuery) ||
+                 p.category.name.toLowerCase().contains(_searchQuery);
+             if (!hit) return false;
+           }
+           if (_selectedCategoryId != -1 && p.category.id != _selectedCategoryId) {
+             return false;
+           }
+           if (_selectedListingType != null) {
+             final wantRent = _selectedListingType == 'rent';
+             if (wantRent && p.listingType != ListingType.rent) return false;
+             if (!wantRent && p.listingType != ListingType.sale) return false;
+           }
+           if (_minPrice != null && p.price < _minPrice!) return false;
+           if (_maxPrice != null && p.price > _maxPrice!) return false;
+           return true;
+         }).toList();
+       }
+     }import 'package:flutter/material.dart';
+      import 'package:flutter_bloc/flutter_bloc.dart';
+      import 'package:real_estate3_a/features/Home/presentation/views/home_view1.dart';
+      import 'package:real_estate3_a/features/profile/presentation/views/profile_view.dart';
+      import '../../../../core/di.dart';
+      import '../../../Favorits/domain/repo/favoriteRepo.dart';
+      import '../../../Favorits/presentation/cubit/favorite_cubit.dart';
+      import '../../../Favorits/presentation/views/FavoriteView.dart';
+      import 'widgets/CustomBottomNavigationBar.dart';
+
+      class MainView extends StatefulWidget {
+        const MainView({Key? key}) : super(key: key);
+        static const routename = "mainview";
+
+        @override
+        State<MainView> createState() => _MainViewState();
+      }
+
+      class _MainViewState extends State<MainView> {
+        int currentIndex = 0;
+
+        @override
+        Widget build(BuildContext context) {
+          return BlocProvider(
+
+            create: (_) => FavoriteCubit(getIt<FavoriteRepository>())..getFavorites(),
+            child: Builder(
+              builder: (context) {
+                final screens = [
+                  const HomeView(),
+                  const FavoriteView(),
+                  const SizedBox(),
+                  const SizedBox(),
+                  ProfileView()
+                ];
+
+                return Scaffold(
+                  bottomNavigationBar: Custombottomnavbar(
+                    currentIndex: currentIndex,
+                    ontapChanged: (index) {
+                      setState(() => currentIndex = index);
+                    },
+                  ),
+                  body: SafeArea(
+                    child: IndexedStack(
+                      children: screens,
+                      index: currentIndex,
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
+      }import 'package:flutter/material.dart';
+       import 'package:flutter_bloc/flutter_bloc.dart';
+       import 'package:real_estate3_a/features/Home/presentation/views/widgets/homeViewBody.dart';
+       import '../../../../core/di.dart';
+       import '../../domain/repo/HomeRepo.dart';
+       import '../home_cubit/home_cubit.dart';
+
+       class HomeView extends StatelessWidget {
+         const HomeView({super.key});
+
+         @override
+         Widget build(BuildContext context) {
+           return MultiBlocProvider(
+             providers: [
+               BlocProvider(
+                 create: (_) => HomeCubit(getIt<HomeRepository>())..getHomeData(),
+               ),
+             ],
+             child: const HomeViewBody(),
+           );
+         }
+       }
+
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../home_cubit/home_cubit.dart';
+import 'Home_Content.dart';
+
+class HomeViewBody extends StatefulWidget {
+  const HomeViewBody();
+
+  @override
+  State<HomeViewBody> createState() => _HomeViewBodyState();
+}
+
+class _HomeViewBodyState extends State<HomeViewBody> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+
+      body: BlocBuilder<HomeCubit, HomeState>(
+        builder: (context, state) {
+          if (state is HomeLoading) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFF2EC4B6),
+              ),
+            );
+          }
+
+          if (state is HomeError) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.wifi_off_rounded,
+                      size: 48.r, color: const Color(0xFF9CA3AF)),
+                  SizedBox(height: 12.h),
+                  Text(
+                    state.message,
+                    style: TextStyle(
+                        fontSize: 14.sp, color: const Color(0xFF6B7280)),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 16.h),
+                  ElevatedButton(
+                    onPressed: () =>
+                        context.read<HomeCubit>().getHomeData(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2EC4B6),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                    ),
+                    child: Text('Retry',
+                        style: TextStyle(fontSize: 14.sp)),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (state is HomeLoaded) {
+
+
+            return HomeContent();
+          }
+
+          return const SizedBox.shrink();
+        },
+      ),
+    );}
+
+}
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/price_field.dart';
+import 'package:real_estate3_a/generated/assets.dart';
+
+import '../../../domain/entities/property_cardEntity.dart';
+import '../../home_cubit/home_cubit.dart';
+import 'CategoryChip.dart';
+import 'Type_Chip.dart';
+import 'propertyCard.dart';
+import '../../../domain/entities/categoryEntity.dart';
+
+class ViewAllScreen extends StatefulWidget {
+  final String title;
+  final List<PropertyCardEntity> items;
+
+  const ViewAllScreen({super.key, required this.title, required this.items});
+
+  @override
+  State<ViewAllScreen> createState() => _ViewAllScreenState();
+}
+
+class _ViewAllScreenState extends State<ViewAllScreen> {
+  int _selectedCategoryIndex = 0;
+  String _searchQuery = '';
+  String? _selectedListingType;
+  double? _minPrice;
+  double? _maxPrice;
+
+  final TextEditingController _searchController = TextEditingController();
+
+  List<PropertyCardEntity> get _filteredItems {
+    return widget.items.where((p) {
+      // 🔍 Search
+      if (_searchQuery.isNotEmpty) {
+        final q = _searchQuery.toLowerCase();
+        final hit =
+            p.title.toLowerCase().contains(q) ||
+            p.address.toLowerCase().contains(q) ||
+            p.category.name.toLowerCase().contains(q);
+
+        if (!hit) return false;
+      }
+
+      // 🏷 Category
+      if (_selectedCategoryIndex != 0) {
+        final uniqueCats = widget.items.map((e) => e.category).toSet().toList();
+
+        if (p.category.id != uniqueCats[_selectedCategoryIndex - 1].id) {
+          return false;
+        }
+      }
+
+      // 🏠 Listing type
+      if (_selectedListingType != null) {
+        final wantRent = _selectedListingType == 'rent';
+
+        if (wantRent && p.listingType != ListingType.rent) {
+          return false;
+        }
+        if (!wantRent && p.listingType != ListingType.sale) {
+          return false;
+        }
+      }
+
+      // 💰 Price
+      if (_minPrice != null && p.price < _minPrice!) return false;
+      if (_maxPrice != null && p.price > _maxPrice!) return false;
+
+      return true;
+    }).toList();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final uniqueCats = widget.items.map((e) => e.category).toSet().toList();
+
+    final categories = [
+      CategoryEntity(
+        id: -1,
+        name: 'All',
+        slug: 'all',
+        description: '',
+        sortOrder: 0,
+      ),
+      ...uniqueCats,
+    ];
+
+    final items = _filteredItems;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF8F9FA),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            _buildSearchBar(context),
+            SizedBox(height: 14.h),
+            _buildCategories(context, categories),
+            SizedBox(height: 16.h),
+
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: Text(
+                '${items.length} ${items.length == 1 ? 'result' : 'results'}',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  color: const Color(0xFF6B7280),
+                ),
+              ),
+            ),
+
+            SizedBox(height: 12.h),
+
+            Expanded(
+              child: items.isEmpty
+                  ? _buildEmpty()
+                  : ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      itemCount: items.length,
+                      separatorBuilder: (_, __) => SizedBox(height: 14.h),
+                      itemBuilder: (_, index) => PropertyCard(
+                        property: items[index],
+                        isWide: true,
+                        onTap: () {},
+                      ),
+                    ),
+            ),
+
+            SizedBox(height: 16.h),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ================= HEADER =================
+  Widget _buildHeader(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              context.read<HomeCubit>().clearFilter();
+              context.read<HomeCubit>().onSearchChanged('');
+              context.read<HomeCubit>().onCategorySelected(-1);
+              Navigator.pop(context);
+            },
+            child: Container(
+              width: 40.r,
+              height: 40.r,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.07),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 16.r,
+                color: const Color(0xFF1A1A2E),
+              ),
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Text(
+            widget.title,
+            style: TextStyle(
+              fontSize: 18.sp,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A1A2E),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  bool get _hasActiveFilter =>
+      _selectedListingType != null || _minPrice != null || _maxPrice != null;
+
+  Widget _buildSearchBar(BuildContext context) {
+    final hasFilter = _hasActiveFilter;
+
+    return Padding(
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 52.h,
+              padding: EdgeInsets.symmetric(horizontal: 12.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14.r),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.search),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: TextField(
+                      controller: _searchController,
+                      onChanged: (v) => setState(() => _searchQuery = v),
+                      decoration: InputDecoration(
+                        hintText: 'Search your home...',
+                        border: InputBorder.none,
+                        suffixIcon: _searchController.text.isNotEmpty
+                            ? GestureDetector(
+                                onTap: () {
+                                  _searchController.clear();
+                                  setState(() => _searchQuery = '');
+                                },
+                                child: const Icon(Icons.close),
+                              )
+                            : null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 12.w),
+
+          GestureDetector(
+            onTap: () => _showFilterSheet(context),
+            child: Container(
+              width: 52.r,
+              height: 52.r,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: hasFilter ? const Color(0xFF2EC4B6) : Colors.white,
+                borderRadius: BorderRadius.circular(24.r),
+              ),
+              child: SvgPicture.asset(Assets.assetsFilterHome),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategories(
+    BuildContext context,
+    List<CategoryEntity> categories,
+  ) {
+    return SizedBox(
+      height: 38.h,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        itemCount: categories.length,
+        separatorBuilder: (_, __) => SizedBox(width: 10.w),
+        itemBuilder: (context, index) => CategoryChip(
+          category: categories[index],
+          isSelected: _selectedCategoryIndex == index,
+          onTap: () {
+            setState(() => _selectedCategoryIndex = index);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmpty() {
+    return const Center(child: Text("No results found"));
+  }
+
+  // ================= FILTER =================
+  void _showFilterSheet(BuildContext context) {
+    String? selectedType = _selectedListingType;
+
+    final minCtrl = TextEditingController(text: _minPrice?.toString() ?? '');
+    final maxCtrl = TextEditingController(text: _maxPrice?.toString() ?? '');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Container(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(ctx).viewInsets.bottom,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 30.h),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40.w,
+                    height: 4.h,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFE5E7EB),
+                      borderRadius: BorderRadius.circular(2.r),
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 20.h),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Filter',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setSheetState(() {
+                          selectedType = null;
+                          minCtrl.clear();
+                          maxCtrl.clear();
+                        });
+                      },
+                      child: Text(
+                        'Clear all',
+                        style: TextStyle(color: const Color(0xFF2EC4B6)),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 20.h),
+
+                // Listing Type
+                Text('Listing Type'),
+                SizedBox(height: 10.h),
+
+                Row(
+                  children: [
+                    TypeChip(
+                      label: 'All',
+                      selected: selectedType == null,
+                      onTap: () => setSheetState(() => selectedType = null),
+                    ),
+                    SizedBox(width: 10.w),
+                    TypeChip(
+                      label: 'For Sale',
+                      selected: selectedType == 'sale',
+                      onTap: () => setSheetState(() => selectedType = 'sale'),
+                    ),
+                    SizedBox(width: 10.w),
+                    TypeChip(
+                      label: 'For Rent',
+                      selected: selectedType == 'rent',
+                      onTap: () => setSheetState(() => selectedType = 'rent'),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 20.h),
+
+                // Price
+                Text('Price Range'),
+                SizedBox(height: 10.h),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: PriceField(controller: minCtrl, hint: 'Min price'),
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: PriceField(controller: maxCtrl, hint: 'Max price'),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 28.h),
+
+                SizedBox(
+                  width: double.infinity,
+                  height: 52.h,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _selectedListingType = selectedType;
+                        _minPrice = double.tryParse(minCtrl.text);
+                        _maxPrice = double.tryParse(maxCtrl.text);
+                      });
+
+                      Navigator.pop(ctx);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2EC4B6),
+                    ),
+                    child: const Text('Apply Filter'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class TypeChip extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const TypeChip({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: selected ? const Color(0xFF2EC4B6) : const Color(0xFFF3F4F6),
+          borderRadius: BorderRadius.circular(20.r),
+          border: Border.all(
+            color: selected
+                ? const Color(0xFF2EC4B6)
+                : const Color(0xFFE5E7EB),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 13.sp,
+            fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
+            color: selected ? Colors.white : const Color(0xFF6B7280),
+          ),
+        ),
+      ),
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+class SectionHeader extends StatelessWidget {
+  final String title;
+  final VoidCallback? onViewAll;
+
+  const SectionHeader({
+    super.key,
+    required this.title,
+    this.onViewAll,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFF1A1A2E),
+            ),
+          ),
+          if (onViewAll != null)
+            GestureDetector(
+              onTap: onViewAll,
+              child: Text(
+                'View All',
+                style: TextStyle(
+                  fontSize: 13.sp,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF2EC4B6),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}import 'package:flutter/material.dart';
+ import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+ class SectionHeader extends StatelessWidget {
+   final String title;
+   final VoidCallback? onViewAll;
+
+   const SectionHeader({
+     super.key,
+     required this.title,
+     this.onViewAll,
+   });
+
+   @override
+   Widget build(BuildContext context) {
+     return Padding(
+       padding: EdgeInsets.symmetric(horizontal: 20.w),
+       child: Row(
+         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+         children: [
+           Text(
+             title,
+             style: TextStyle(
+               fontSize: 16.sp,
+               fontWeight: FontWeight.w700,
+               color: const Color(0xFF1A1A2E),
+             ),
+           ),
+           if (onViewAll != null)
+             GestureDetector(
+               onTap: onViewAll,
+               child: Text(
+                 'View All',
+                 style: TextStyle(
+                   fontSize: 13.sp,
+                   fontWeight: FontWeight.w500,
+                   color: const Color(0xFF2EC4B6),
+                 ),
+               ),
+             ),
+         ],
+       ),
+     );
+   }
+ }import 'package:flutter/material.dart';
+  import 'package:flutter_screenutil/flutter_screenutil.dart';
+  import 'package:flutter_svg/flutter_svg.dart';
+  import 'package:real_estate3_a/core/utils/app_styles.dart';
+  import 'package:real_estate3_a/features/Home/presentation/views/widgets/fav_button.dart';
+  import 'package:real_estate3_a/generated/assets.dart';
+  import '../../../domain/entities/property_cardEntity.dart';
+
+  class PropertyCard extends StatelessWidget {
+    final PropertyCardEntity property;
+    final VoidCallback? onTap;
+    final bool isWide; // for featured horizontal cards
+
+    const PropertyCard({
+      super.key,
+      required this.property,
+      this.onTap,
+      this.isWide = false,
+    });
+
+    @override
+    Widget build(BuildContext context) {
+      return isWide ? _buildWideCard(context) : _buildNormalCard(context);
+    }
+
+    Widget _buildNormalCard(BuildContext context) {
+      final width = MediaQuery.sizeOf(context).width.w;
+      final height = MediaQuery.sizeOf(context).height.h;
+
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: width * 0.5,
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.07),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16.r),
+                    ),
+                    child: property.thumbnailUrl != null
+                        ? Image.network(
+                            property.thumbnailUrl!,
+                            height: height * 0.18,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                          )
+                        : _imagePlaceholder(),
+                  ),
+                  Positioned(
+                    top: 10.h,
+                    left: 10.w,
+                    child: _ListingBadge(type: property.listingType),
+                  ),
+                ],
+              ),
+
+              Padding(
+                padding: EdgeInsets.all(10.r),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _cleanTitle(property.title),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                      FavButton(propertyId: property.id),
+                      ],
+                    ),
+                    SizedBox(height: 4.h),
+                    Row(
+                      children: [
+                        SvgPicture.asset(
+                          Assets.assetsLocationHome,
+                          width: 13.w,
+                          height: 13.h,
+                        ),
+                        SizedBox(width: 4.w),
+
+
+                        Expanded(
+                          child: Text(
+                            property.address,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 10.sp,
+                              color: const Color(0xFF6B7280),
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(width: 6.w),
+
+                        Container(
+                          width: 1.w,
+                          height: 12.h,
+                          color: const Color(0xFF6B7280).withOpacity(0.5),
+                        ),
+
+                        SizedBox(width: 6.w),
+
+                        SvgPicture.asset(
+                          Assets.assetsNavigationHome,
+                          width: 13.w,
+                          height: 13.h,
+                        ),
+
+                        SizedBox(width: 3.w),
+
+                        Text(
+                          '500 miles',
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w400,
+                            color: const Color(0xFF6B7280),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _formatPrice(property.price, property.listingType),
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            SvgPicture.asset(
+                              Assets.assetsReviewIcon,
+                              width: 13,
+                              height: 13,
+                            ),
+                            SizedBox(width: 4.w),
+                            Text(
+                              "4.9",
+                              style: getRegularStyle(
+                                fontSize: 12,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget _buildWideCard(BuildContext context) {
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16.r),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.07),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Image
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.horizontal(
+                      left: Radius.circular(16.r),
+                    ),
+                    child: property.thumbnailUrl != null
+                        ? Image.network(
+                            property.thumbnailUrl!,
+                            height: 170.h,
+                            width: 170.w,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) =>
+                                _imagePlaceholderSquare(170.w, 170.h),
+                          )
+                        : _imagePlaceholderSquare(170.w, 170.h),
+                  ),
+                  Positioned(
+                    top: 10.h,
+                    left: 10.w,
+                    child: _ListingBadge(type: property.listingType),
+                  ),
+                ],
+              ),
+
+              // Details
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                  child: Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start, // مهم
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _cleanTitle(property.title),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: getMediumStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 6.w),
+                         FavButton(propertyId: property.id),
+                        ],
+                      ),
+                      SizedBox(height: 12.h),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            Assets.assetsLocationHome,
+                            width: 13.w,
+                            height: 13.h,
+                          ),
+                          SizedBox(width: 4.w),
+
+                          Expanded(
+                            child: Text(
+                              property.address,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 10.sp,
+                                color: const Color(0xFF6B7280),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(width: 6.w),
+
+                          Container(
+                            width: 1.w,
+                            height: 12.h,
+                            color: const Color(0xFF6B7280).withOpacity(0.5),
+                          ),
+
+                          SizedBox(width: 6.w),
+
+                          SvgPicture.asset(
+                            Assets.assetsNavigationHome,
+                            width: 13.w,
+                            height: 13.h,
+                          ),
+
+                          SizedBox(width: 3.w),
+
+                          Text(
+                            '500 miles',
+                            style: TextStyle(
+                              fontSize: 10.sp,
+                              fontWeight: FontWeight.w400,
+                              color: const Color(0xFF6B7280),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 30.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _formatPrice(property.price, property.listingType),
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                              color:Colors.black,
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              SvgPicture.asset(
+                                Assets.assetsReviewIcon,
+                                width: 13,
+                                height: 13,
+                              ),
+                              SizedBox(width: 4.w),
+                              Text(
+                                "4.9",
+                                style: getRegularStyle(
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    String _cleanTitle(String title) {
+      if (title.contains('—')) {
+        return title.split('—').last.trim();
+      }
+      return title;
+    }
+
+    Widget _imagePlaceholder() {
+      return Container(
+        height: 130.h,
+        width: double.infinity,
+        color: const Color(0xFFF3F4F6),
+        child: Icon(
+          Icons.home_outlined,
+          size: 40.r,
+          color: const Color(0xFF9CA3AF),
+        ),
+      );
+    }
+
+    Widget _imagePlaceholderSquare(double w, double h) {
+      return Container(
+        height: h,
+        width: w,
+        color: const Color(0xFFF3F4F6),
+        child: Icon(
+          Icons.home_outlined,
+          size: 30.r,
+          color: const Color(0xFF9CA3AF),
+        ),
+      );
+    }
+
+    String _formatPrice(double price, ListingType type) {
+      final formatted = price >= 1000000
+          ? '${(price / 1000000).toStringAsFixed(1)}M'
+          : price >= 1000
+          ? '${(price / 1000).toStringAsFixed(0)}K'
+          : price.toStringAsFixed(0);
+
+      return type == ListingType.rent ? 'EGP $formatted/mo' : 'EGP $formatted';
+    }
+  }
+
+  class _ListingBadge extends StatelessWidget {
+    final ListingType type;
+    final bool compact;
+
+    const _ListingBadge({required this.type, this.compact = false});
+
+    @override
+    Widget build(BuildContext context) {
+      final isRent = type == ListingType.rent;
+      return Container(
+        padding: EdgeInsets.symmetric(),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+          child: Row(
+            children: [
+              SvgPicture.asset(Assets.assetsSaleProperty),
+              SizedBox(width: 4.w),
+              Text(
+                isRent ? 'For Rent' : 'For Sale',
+                style: TextStyle(
+                  fontSize: compact ? 10.sp : 10.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+  }
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/features/Home/domain/entities/categoryEntity.dart';
+
+import '../../home_cubit/home_cubit.dart';
+import 'CategoryChip.dart';
+
+class Homecategorylist extends StatefulWidget {
+  const Homecategorylist({Key? key,required this.categories}) : super(key: key);
+
+final List<CategoryEntity> categories;
+
+  @override
+  State<Homecategorylist> createState() => _HomecategorylistState();
+}
+
+class _HomecategorylistState extends State<Homecategorylist> {
+  int selectedCategoryIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final allCategories = [
+      CategoryEntity(id: -1, name: 'All', slug: 'all', description: '', sortOrder: 0),
+      ...widget.categories,
+    ];
+    return Padding(
+      padding: EdgeInsets.only(top: 16.h),
+      child: SizedBox(
+        height: 38.h,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          itemCount: allCategories.length,
+          separatorBuilder: (_, __) => SizedBox(width: 10.w),
+          itemBuilder: (context, index) => CategoryChip(
+            category:allCategories[index],
+            isSelected: selectedCategoryIndex == index,
+            onTap: () {
+              setState(() => selectedCategoryIndex = index);
+
+              context.read<HomeCubit>().onCategorySelected(allCategories[index].id);
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+// Widget _buildCategories(List categories) {
+//   return Padding(
+//     padding: EdgeInsets.only(top: 16.h),
+//     child: SizedBox(
+//       height: 38.h,
+//       child: ListView.separated(
+//         scrollDirection: Axis.horizontal,
+//         physics: const BouncingScrollPhysics(),
+//         padding: EdgeInsets.symmetric(horizontal: 20.w),
+//         itemCount: categories.length,
+//         separatorBuilder: (_, __) => SizedBox(width: 10.w),
+//         itemBuilder: (context, index) => CategoryChip(
+//           category: categories[index],
+//           isSelected: _selectedCategoryIndex == index,
+//           onTap: () =>
+//               setState(() => _selectedCategoryIndex = index),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/propertyCard.dart';
+
+class HomeHorizontalList extends StatelessWidget {
+  final List items;
+  final bool isWide;
+  final void Function(int index)? onTap;
+
+  const HomeHorizontalList({
+    super.key,
+    required this.items,
+    required this.isWide,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * 0.28,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
+        itemCount: items.length,
+        separatorBuilder: (_, __) => SizedBox(width: 14.w),
+        itemBuilder: (context, index) => PropertyCard(
+          property: items[index],
+          isWide: isWide,
+          onTap: () => onTap?.call(index),
+        ),
+      ),
+    );
+  }
+}import 'package:flutter/material.dart';
+ import 'package:flutter_bloc/flutter_bloc.dart';
+ import 'package:flutter_screenutil/flutter_screenutil.dart';
+ import 'package:flutter_svg/svg.dart';
+ import 'package:real_estate3_a/features/Home/presentation/views/widgets/price_field.dart';
+ import 'package:real_estate3_a/generated/assets.dart';
+
+ import '../../home_cubit/home_cubit.dart';
+ import 'Type_Chip.dart';
+
+ class HomeSearchbar extends StatefulWidget {
+   const HomeSearchbar({super.key});
+
+   @override
+   State<HomeSearchbar> createState() => _HomeSearchbarState();
+ }
+
+ class _HomeSearchbarState extends State<HomeSearchbar> {
+   final TextEditingController _controller = TextEditingController();
+
+   @override
+   void dispose() {
+     _controller.dispose();
+     super.dispose();
+   }
+
+   @override
+   Widget build(BuildContext context) {
+     return BlocBuilder<HomeCubit, HomeState>(
+       builder: (context, state) {
+         final hasFilter =
+             state is HomeLoaded && state.hasActiveFilter;
+
+         return Padding(
+           padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
+           child: Row(
+             children: [
+               // ── Search field ──────────────────────────────────
+               Expanded(
+                 flex: 8,
+                 child: Container(
+                   height: 52.h,
+                   padding: EdgeInsets.symmetric(horizontal: 12.w),
+                   decoration: BoxDecoration(
+                     color: Colors.white,
+                     borderRadius: BorderRadius.circular(14.r),
+                     boxShadow: [
+                       BoxShadow(
+                         color: Colors.black.withOpacity(0.06),
+                         blurRadius: 10,
+                         offset: const Offset(0, 3),
+                       ),
+                     ],
+                   ),
+                   child: Row(
+                     children: [
+                       Icon(Icons.search,
+                           size: 20.sp, color: const Color(0xFF9CA3AF)),
+                       SizedBox(width: 10.w),
+                       Expanded(
+                         child: TextField(
+                           controller: _controller,
+                           onChanged: (v) =>
+                               context.read<HomeCubit>().onSearchChanged(v),
+                           decoration: InputDecoration(
+                             hintText: 'Search your home...',
+                             hintStyle: TextStyle(
+                               fontSize: 14.sp,
+                               color: const Color(0xFF9CA3AF),
+                             ),
+                             border: InputBorder.none,
+                             isDense: true,
+                             // X لو في نص
+                             suffixIcon: _controller.text.isNotEmpty
+                                 ? GestureDetector(
+                               onTap: () {
+                                 _controller.clear();
+                                 context
+                                     .read<HomeCubit>()
+                                     .onSearchChanged('');
+                               },
+                               child: Icon(Icons.close,
+                                   size: 16.r,
+                                   color: const Color(0xFF9CA3AF)),
+                             )
+                                 : null,
+                           ),
+                           style: TextStyle(
+                             fontSize: 14.sp,
+                             color: const Color(0xFF1A1A2E),
+                           ),
+                           onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+               ),
+
+               SizedBox(width: 12.w),
+
+               // ── Filter button ─────────────────────────────────
+               GestureDetector(
+                 onTap: () => _showFilterSheet(context),
+                 child: Stack(
+                   children: [
+                     Container(
+                       width: 52.r,
+                       height: 52.r,
+                       alignment: Alignment.center,
+                       decoration: BoxDecoration(
+
+                         color: hasFilter
+                             ? const Color(0xFF2EC4B6)
+                             : Colors.white,
+                         borderRadius: BorderRadius.circular(24.r),
+                         boxShadow: [
+                           BoxShadow(
+                             color: Colors.black.withOpacity(0.06),
+                             blurRadius: 10,
+                             offset: const Offset(0, 3),
+                           ),
+                         ],
+                       ),
+                       child: SvgPicture.asset(
+                         Assets.assetsFilterHome,
+                         // لو active يخلي الأيقونة بيضاء
+                         colorFilter: hasFilter
+                             ? const ColorFilter.mode(
+                             Colors.white, BlendMode.srcIn)
+                             : null,
+                       ),
+                     ),
+                     // نقطة حمراء لو في filter
+                     if (hasFilter)
+                       Positioned(
+                         top: 6.r,
+                         right: 6.r,
+                         child: Container(
+                           width: 8.r,
+                           height: 8.r,
+                           decoration: const BoxDecoration(
+                             color: Colors.redAccent,
+                             shape: BoxShape.circle,
+                           ),
+                         ),
+                       ),
+                   ],
+                 ),
+               ),
+             ],
+           ),
+         );
+       },
+     );
+   }
+
+
+   void _showFilterSheet(BuildContext context) {
+     final cubit = context.read<HomeCubit>();
+
+
+     String? selectedType = cubit.selectedListingType;
+     final minCtrl = TextEditingController(
+       text: cubit.minPrice?.toStringAsFixed(0) ?? '',
+     );
+     final maxCtrl = TextEditingController(
+       text: cubit.maxPrice?.toStringAsFixed(0) ?? '',
+     );
+
+     showModalBottomSheet(
+       context: context,
+       isScrollControlled: true,
+       backgroundColor: Colors.transparent,
+       builder: (_) {
+         return StatefulBuilder(
+           builder: (ctx, setSheetState) {
+             return Container(
+               padding: EdgeInsets.only(
+                 bottom: MediaQuery.of(ctx).viewInsets.bottom,
+               ),
+               decoration: BoxDecoration(
+                 color: Colors.white,
+                 borderRadius:
+                 BorderRadius.vertical(top: Radius.circular(24.r)),
+               ),
+               child: Padding(
+                 padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 30.h),
+                 child: Column(
+                   mainAxisSize: MainAxisSize.min,
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+                     // handle
+                     Center(
+                       child: Container(
+                         width: 40.w,
+                         height: 4.h,
+                         decoration: BoxDecoration(
+                           color: const Color(0xFFE5E7EB),
+                           borderRadius: BorderRadius.circular(2.r),
+                         ),
+                       ),
+                     ),
+                     SizedBox(height: 20.h),
+
+                     // Title
+                     Row(
+                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                       children: [
+                         Text(
+                           'Filter',
+                           style: TextStyle(
+                             fontSize: 18.sp,
+                             fontWeight: FontWeight.w700,
+                             color: const Color(0xFF1A1A2E),
+                           ),
+                         ),
+                         // Clear
+                         GestureDetector(
+                           onTap: () {
+                             setSheetState(() {
+                               selectedType = null;
+                               minCtrl.clear();
+                               maxCtrl.clear();
+                             });
+                           },
+                           child: Text(
+                             'Clear all',
+                             style: TextStyle(
+                               fontSize: 13.sp,
+                               color: const Color(0xFF2EC4B6),
+                               fontWeight: FontWeight.w500,
+                             ),
+                           ),
+                         ),
+                       ],
+                     ),
+
+                     SizedBox(height: 20.h),
+
+
+                     Text(
+                       'Listing Type',
+                       style: TextStyle(
+                         fontSize: 14.sp,
+                         fontWeight: FontWeight.w600,
+                         color: const Color(0xFF1A1A2E),
+                       ),
+                     ),
+                     SizedBox(height: 10.h),
+                     Row(
+                       children: [
+                         TypeChip(
+                           label: 'All',
+                           selected: selectedType == null,
+                           onTap: () =>
+                               setSheetState(() => selectedType = null),
+                         ),
+                         SizedBox(width: 10.w),
+                         TypeChip(
+                           label: 'For Sale',
+                           selected: selectedType == 'sale',
+                           onTap: () =>
+                               setSheetState(() => selectedType = 'sale'),
+                         ),
+                         SizedBox(width: 10.w),
+                         TypeChip(
+                           label: 'For Rent',
+                           selected: selectedType == 'rent',
+                           onTap: () =>
+                               setSheetState(() => selectedType = 'rent'),
+                         ),
+                       ],
+                     ),
+
+                     SizedBox(height: 20.h),
+
+
+                     Text(
+                       'Price Range (EGP)',
+                       style: TextStyle(
+                         fontSize: 14.sp,
+                         fontWeight: FontWeight.w600,
+                         color: const Color(0xFF1A1A2E),
+                       ),
+                     ),
+                     SizedBox(height: 10.h),
+                     Row(
+                       children: [
+                         Expanded(
+                           child: PriceField(
+                             controller: minCtrl,
+                             hint: 'Min price',
+                           ),
+                         ),
+                         SizedBox(width: 12.w),
+                         Expanded(
+                           child: PriceField(
+                             controller: maxCtrl,
+                             hint: 'Max price',
+                           ),
+                         ),
+                       ],
+                     ),
+
+                     SizedBox(height: 28.h),
+
+                     // ── Apply button ──────────────────────────────
+                     SizedBox(
+                       width: double.infinity,
+                       height: 52.h,
+                       child: ElevatedButton(
+                         onPressed: () {
+                           final min = double.tryParse(minCtrl.text);
+                           final max = double.tryParse(maxCtrl.text);
+                           cubit.applyFilter(
+                             listingType: selectedType,
+                             minPrice: min,
+                             maxPrice: max,
+                           );
+                           Navigator.pop(ctx);
+                         },
+                         style: ElevatedButton.styleFrom(
+                           backgroundColor: const Color(0xFF2EC4B6),
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(14.r),
+                           ),
+                           elevation: 0,
+                         ),
+                         child: Text(
+                           'Apply Filter',
+                           style: TextStyle(
+                             fontSize: 15.sp,
+                             fontWeight: FontWeight.w600,
+                             color: Colors.white,
+                           ),
+                         ),
+                       ),
+                     ),
+                   ],
+                 ),
+               ),
+             );
+           },
+         );
+       },
+     );
+   }
+ }
+
+
+
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/HomeCategoryList.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/Home_AppBar.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/Home_searchBar.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/propertyCard.dart';
+import 'package:real_estate3_a/features/Home/presentation/views/widgets/viewAllScreen.dart';
+
+import '../../../../../core/funcations/app_functions.dart';
+import '../../../../Favorits/presentation/cubit/favorite_cubit.dart';
+import '../../home_cubit/home_cubit.dart';
+import 'HomeHorizontalList.dart';
+import 'SectionHeader.dart';
+
+class HomeContent extends StatelessWidget {
+  const HomeContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeCubit, HomeState>(
+      builder: (context, state) {
+        if (state is! HomeLoaded) return const SizedBox.shrink();
+
+        return CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(child: HomeAppbar()),
+            SliverToBoxAdapter(child: HomeSearchbar()),
+            SliverToBoxAdapter(
+              child: Homecategorylist(categories: state.homeData.categories),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+
+            SliverToBoxAdapter(
+              child: SectionHeader(
+                title: 'Best Selling',
+                onViewAll: () {
+                  AppFunctions.navigateTo(
+                    context,
+                    BlocProvider.value(
+                      value: context.read<FavoriteCubit>(),
+                      child: ViewAllScreen(title: "Best Selling", items: state.filteredBestSelling),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+            SliverToBoxAdapter(
+              child: HomeHorizontalList(
+                items: state.filteredBestSelling,
+                isWide: false,
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+            SliverToBoxAdapter(
+              child: SectionHeader(
+                title: 'Featured',
+                onViewAll: () {
+                  AppFunctions.navigateTo(
+                    context,
+                    BlocProvider.value(
+                      value: context.read<FavoriteCubit>(),
+                      child: ViewAllScreen(title: "Featured", items: state.filteredFeatured),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+            SliverToBoxAdapter(
+              child: HomeHorizontalList(
+                items: state.filteredFeatured,
+                isWide: false,
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Text(
+                  "Recommended",
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF1A1A2E),
+                  ),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 16.h)),
+            SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              sliver: SliverGrid(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 14.w,
+                  mainAxisSpacing: 14.h,
+                  childAspectRatio: 200 / 220,
+                ),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => PropertyCard(
+                    property: state.filteredRecommended[index],
+                    onTap: () {},
+                  ),
+                  childCount: state.filteredRecommended.length,
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+          ],
+        );
+      },
+    );
+  }
+}
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/core/utils/app_colors.dart';
+import '../../../domain/entities/categoryEntity.dart';
+
+class CategoryChip extends StatelessWidget {
+  final CategoryEntity category;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const CategoryChip({
+    super.key,
+    required this.category,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeInOut,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.splashColor
+              : AppColors.lightprimarycolor,
+          borderRadius: BorderRadius.circular(20.r),
+
+          boxShadow: isSelected
+              ? [
+            BoxShadow(
+              color: const Color(0xFF2EC4B6).withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            )
+          ]
+              : [],
+        ),
+        child: Text(
+          category.name,
+          style: TextStyle(
+            fontSize: 14.sp,
+            fontWeight:
+            isSelected ? FontWeight.w600 : FontWeight.w400,
+            color: isSelected
+                ? Colors.white
+                : AppColors.splashColor,
+          ),
+        ),
+      ),
+    );
+  }
+}

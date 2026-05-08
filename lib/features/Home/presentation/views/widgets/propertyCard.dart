@@ -83,7 +83,7 @@ class PropertyCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             color: Colors.black,
                           ),
@@ -152,9 +152,9 @@ class PropertyCard extends StatelessWidget {
                       Text(
                         _formatPrice(property.price, property.listingType),
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
-                          color: const Color(0xFF2EC4B6),
+                          color: Colors.black,
                         ),
                       ),
                       Row(
@@ -312,9 +312,9 @@ class PropertyCard extends StatelessWidget {
                         Text(
                           _formatPrice(property.price, property.listingType),
                           style: TextStyle(
-                            fontSize: 13.sp,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
-                            color: const Color(0xFF2EC4B6),
+                            color:Colors.black,
                           ),
                         ),
                         Row(

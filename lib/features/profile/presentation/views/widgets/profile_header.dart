@@ -87,18 +87,7 @@ class ProfileHeaderCard extends StatelessWidget {
                   backgroundColor: const Color(0xFFFFF3D6),
                   backgroundImage:
                   avatarImage != null ? FileImage(avatarImage!) : null,
-                  child: avatarImage == null
-                      ? Text(
-                    profile.name.isNotEmpty
-                        ? profile.name[0].toUpperCase()
-                        : '?',
-                    style: TextStyle(
-                      fontSize: 32.sp,
-                      color:  const Color(0xFF8B6508),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                      : null,
+                  child: null,
                 ),
               ),
               // Camera badge

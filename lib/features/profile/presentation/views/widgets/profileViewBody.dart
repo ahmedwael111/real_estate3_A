@@ -54,7 +54,7 @@ class _ProfileViewBody1State extends State<ProfileViewBody1> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 160.h + 44.r + 4, // cover + نص الـ avatar
+                height: 160.h + 44.r + 4,
                 child: ProfileHeaderCard(
                   profile: profile,
                   coverImage: _coverImage,
@@ -119,8 +119,8 @@ class _ProfileViewBody1State extends State<ProfileViewBody1> {
               _MenuCard(children:[
                 ProfileMenuItem(
                   icon: Icons.lock_outline_rounded,
-                  title: 'Change Password',
-                  subtitle: 'Update your account password',
+                  title: 'Payment Method',
+                  subtitle: 'select your payment menthod',
                   onTap: (){}
                 ),
               ] ),

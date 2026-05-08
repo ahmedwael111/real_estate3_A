@@ -74,11 +74,26 @@ class HomeCubit extends Cubit<HomeState> {
   // ── Core ──────────────────────────────────────────────────────────────────
   void _emitFiltered() {
     if (_rawData == null) return;
+
+    final bestSelling = _applyFilters(_rawData!.bestSelling);
+    final featured = _applyFilters(_rawData!.featured);
+    final recommended = _applyFilters(_rawData!.recommended);
+
+    // ✅ دمج كل النتائج مع إزالة التكرار
+    final allIds = <int>{};
+    final allResults = <PropertyCardEntity>[];
+    for (final item in [...bestSelling, ...featured, ...recommended]) {
+      if (allIds.add(item.id)) {
+        allResults.add(item);
+      }
+    }
+
     emit(HomeLoaded(
       homeData: _rawData!,
-      filteredBestSelling: _applyFilters(_rawData!.bestSelling),
-      filteredFeatured: _applyFilters(_rawData!.featured),
-      filteredRecommended: _applyFilters(_rawData!.recommended),
+      filteredBestSelling: bestSelling,
+      filteredFeatured: featured,
+      filteredRecommended: recommended,
+      allFilteredResults: allResults,
       searchQuery: _searchQuery,
       selectedCategoryId: _selectedCategoryId,
       selectedListingType: _selectedListingType,
