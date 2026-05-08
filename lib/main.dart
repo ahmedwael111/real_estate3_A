@@ -13,13 +13,9 @@ class RealStateApp3A extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Real Estate 3A',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue),
       home: const Scaffold(
-        body: Center(
-          child: Text('Welcome to Real Estate 3A!'),
-        ),
+        body: Center(child: Text('Welcome to Real Estate 3A!')),
       ),
     );
   }

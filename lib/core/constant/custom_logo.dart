@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart' as Assets;
+// import 'package:flutter_svg/svg.dart' ;
 
 import 'custom_png_image.dart';
 
@@ -18,7 +18,7 @@ class CustomLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPngImage(
-      path: 'assets/images/logo.png', //Assets.svg.logo
+      path: '', //Assets.svg.logo
       height: height,
       width: width,
       fit: fit,
