@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/property_details_view_body.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentation/widgets/propery_details_view_body.dart';
 import 'package:real_estate3_a/core/constant/snakbar.dart';
 
 class PropertyDetailsViewBolcConsumer extends StatelessWidget {

@@ -1,21 +1,36 @@
 import '../../../data/models/property/user.details.model.dart';
 
-class User {
+class UserEntity {
   int? id;
   String? name;
   String? email;
   String? role;
+  dynamic location;
+  dynamic phone;
   DateTime? createdAt;
+  String? image;
 
-  User({this.id, this.name, this.email, this.role, this.createdAt});
+  UserEntity({
+    this.id,
+    this.name,
+    this.email,
+    this.role,
+    this.location,
+    this.phone,
+    this.createdAt,
+    this.image,
+  });
 
-  factory User.fromModel(UserModel json) {
-    return User(
+  factory UserEntity.fromModel(UserModel json) {
+    return UserEntity(
       id: json.id,
       name: json.name,
       email: json.email,
       role: json.role,
+      location: json.location,
+      phone: json.phone,
       createdAt: json.createdAt,
+      image: json.image,
     );
   }
 

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate3_a/Features/Property%20Details/domin/entities/property/property.details.entity.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/widgets/user_review_view_provider.dart';
-
+import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 class ReviewDetailsSection extends StatelessWidget {
   const ReviewDetailsSection({super.key, required this.propertyDetailsEntity});
@@ -13,165 +13,175 @@ class ReviewDetailsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ReviewsPropertyCubit, ReviewsPropertyState>(
       builder: (context, state) {
-        return Container(
-          margin: const EdgeInsets.only(top: 10),
-          padding: const EdgeInsets.all(16),
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Header
-              GestureDetector(
-                onTap: () {
-                  // Navigate to reviews page
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => UserReviewsViewProvider(
-                        propertyDetailsEntity: propertyDetailsEntity,
+        if (state is ReviewsPropertyLoaded) {
+          return Container(
+            margin: const EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.all(16),
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Header
+                GestureDetector(
+                  onTap: () {
+                    // Navigate to reviews page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => UserReviewsViewProvider(
+                          propertyDetailsEntity: propertyDetailsEntity,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "User Reviews",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text("See all", style: TextStyle(color: Colors.teal)),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 8),
-
-              /// Rating Row
-              Row(
-                children: [
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  SizedBox(width: 4),
-                  Text(
-                    propertyDetailsEntity.rate ?? "",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  SizedBox(width: 6),
-                  Text('0 ratings', style: TextStyle(color: Colors.grey)),
-                  SizedBox(width: 10),
-                  Text("•", style: TextStyle(color: Colors.grey)),
-                  SizedBox(width: 10),
-                  Text("35 Reviews", style: TextStyle(color: Colors.grey)),
-                ],
-              ),
-
-              const SizedBox(height: 12),
-
-              /// Images Row
-              SizedBox(
-                height: 80,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 4,
-                  separatorBuilder: (_, _) => const SizedBox(width: 10),
-                  itemBuilder: (context, index) {
-                    if (index == 3) {
-                      return Stack(
-                        children: [
-                          _reviewImage(
-                            propertyDetailsEntity.images![index].url ?? "",
-                          ),
-
-                          Container(
-                            width: 80,
-                            height: 80,
-                            decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.5),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              "+25",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-
-                    return _reviewImage(
-                      propertyDetailsEntity.images![index].url ?? "",
                     );
                   },
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "User Reviews",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text("See all", style: TextStyle(color: Colors.teal)),
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 8),
 
-              /// User Info
-              Row(
-                children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey),
+                /// Rating Row
+                Row(
+                  children: [
+                    Icon(Icons.star, color: Colors.amber, size: 18),
+                    SizedBox(width: 4),
+                    Text(
+                      propertyDetailsEntity.rate ?? "",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    // child:  CachedImageWidget(
-                    //         imageUrl: firstReview?.user?.image ?? "",
-                    //       ),
+                    SizedBox(width: 6),
+                    Text(
+                      '${propertyDetailsEntity.rate} ratings',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    SizedBox(width: 10),
+                    Text("•", style: TextStyle(color: Colors.grey)),
+                    SizedBox(width: 10),
+                    Text("35 Reviews", style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
+
+                const SizedBox(height: 12),
+
+                /// Images Row
+                SizedBox(
+                  height: 80,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 4,
+                    separatorBuilder: (_, _) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      if (index == 3) {
+                        return Stack(
+                          children: [
+                            _reviewImage(
+                              propertyDetailsEntity.images![index].url ?? "",
+                            ),
+
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.black.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "+25",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      return _reviewImage(
+                        propertyDetailsEntity.images![index].url ?? "",
+                      );
+                    },
                   ),
+                ),
 
-                  SizedBox(width: 10),
-                  Text(
-                    "Leslie Alexander",
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
+                const SizedBox(height: 16),
 
-              const SizedBox(height: 10),
+                /// User Info
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: CachedImageWidget(
+                        imageUrl: state.reviews[0].user?.image ?? '',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
 
-              /// Stars + Time
-              Row(
-                children: const [
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  Icon(Icons.star, color: Colors.amber, size: 18),
-                  SizedBox(width: 8),
-                  Text("5/5", style: TextStyle(color: Colors.grey)),
-                  SizedBox(width: 10),
-                  Text("1 week ago", style: TextStyle(color: Colors.grey)),
-                ],
-              ),
+                    SizedBox(width: 10),
+                    Text(
+                      state.reviews[0].user?.name ?? "Unknown User",
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                  ],
+                ),
 
-              const SizedBox(height: 12),
+                const SizedBox(height: 10),
 
-              /// Title
-              const Text(
-                "A Beautiful, Welcoming Home",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
+                /// Stars + Time
+                Row(
+                  children: const [
+                    Icon(Icons.star, color: Colors.amber, size: 18),
+                    Icon(Icons.star, color: Colors.amber, size: 18),
+                    Icon(Icons.star, color: Colors.amber, size: 18),
+                    Icon(Icons.star, color: Colors.amber, size: 18),
+                    Icon(Icons.star, color: Colors.amber, size: 18),
+                    SizedBox(width: 8),
+                    Text("5/5", style: TextStyle(color: Colors.grey)),
+                    SizedBox(width: 10),
+                    Text("1 week ago", style: TextStyle(color: Colors.grey)),
+                  ],
+                ),
 
-              const SizedBox(height: 8),
+                const SizedBox(height: 12),
 
-              /// Description
-              const Text(
-                "This house is beautiful and welcoming. The wraparound porch is a standout feature, perfect for relaxing outdoors. Inside, the large windows make the rooms bright and airy. The yard is spacious and well-kept, with plenty of greenery. Overall, it’s a lovely home that feels both elegant and comfortable.",
-                style: TextStyle(color: Colors.grey, height: 1.4),
-              ),
-            ],
-          ),
-        );
+                /// Title
+                const Text(
+                  "A Beautiful, Welcoming Home",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                ),
+
+                const SizedBox(height: 8),
+
+                /// Description
+                const Text(
+                  "This house is beautiful and welcoming. The wraparound porch is a standout feature, perfect for relaxing outdoors. Inside, the large windows make the rooms bright and airy. The yard is spacious and well-kept, with plenty of greenery. Overall, it’s a lovely home that feels both elegant and comfortable.",
+                  style: TextStyle(color: Colors.grey, height: 1.4),
+                ),
+              ],
+            ),
+          );
+        } else if (state is ReviewsPropertyError) {
+          return Center(child: Text(state.message));
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
@@ -180,7 +190,7 @@ class ReviewDetailsSection extends StatelessWidget {
   Widget _reviewImage(String? url) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      // child: CachedImageWidget(imageUrl: url),
+      child: CachedImageWidget(imageUrl: url ?? "", fit: BoxFit.cover),
     );
   }
 }

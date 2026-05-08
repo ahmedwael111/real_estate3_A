@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/view_360_view.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/widgets/review_details_section.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentation/view_360_view.dart';
+import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 import 'package:real_estate3_a/core/constant/custom_button.dart';
 import 'package:real_estate3_a/core/constant/custom_png_image.dart';
@@ -165,12 +166,12 @@ class HeaderSection extends StatelessWidget {
           borderRadius: const BorderRadius.vertical(
             bottom: Radius.circular(20),
           ),
-          // child: CachedImageWidget(
-          //         imageUrl: propertyDetailsEntity.images?.first.url ?? "",
-          //         height: 300,
-          //         width: double.infinity,
-          //         fit: BoxFit.cover,
-          //       ),
+          child: CachedImageWidget(
+            imageUrl: propertyDetailsEntity.images?.first.url ?? "",
+            height: 400,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
         ),
         Container(
           height: 400,
@@ -392,10 +393,17 @@ class AgentSection extends StatelessWidget {
           SizedBox(height: 12),
           Row(
             children: [
-              CustomPngImage(
-                path: Assets.assetsMapPlaceholder,
-                height: 50,
+              Container(
                 width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(Assets.assetsPersonPlacholder),
+                    fit: BoxFit.cover,
+                  ),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.grey),
+                ),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -403,24 +411,32 @@ class AgentSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      propertyDetailsEntity.agent?.user?.name ?? "",
+                      propertyDetailsEntity.agent?.user?.name ??
+                          "Unknown Agent",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      propertyDetailsEntity.agent?.user?.role ?? "",
+                      propertyDetailsEntity.agent?.user?.role ??
+                          " Unknown Agent Role",
                       style: TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
               ),
               CircleAvatar(
-                backgroundColor: Colors.teal[100],
-                child: const Icon(Icons.call, color: Colors.teal),
+                backgroundColor: Color(0xFFBFF8FF),
+                child: const Icon(
+                  Icons.call_outlined,
+                  color: Color(0xFF1597A8),
+                ),
               ),
               const SizedBox(width: 10),
               CircleAvatar(
-                backgroundColor: Colors.teal[100],
-                child: const Icon(Icons.message, color: Colors.teal),
+                backgroundColor: Color(0xFFBFF8FF),
+                child: const Icon(
+                  Icons.message_outlined,
+                  color: Color(0xFF1597A8),
+                ),
               ),
             ],
           ),
@@ -523,13 +539,14 @@ class PropertyCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(20),
+                  bottom: Radius.circular(20),
                 ),
-                // child:  CachedImageWidget(
-                //         imageUrl: property.images?.first.url ?? "",
-                //         height: 300,
-                //         width: double.infinity,
-                //         fit: BoxFit.cover,
-                //       ),
+                child: CachedImageWidget(
+                  imageUrl: property.images?.first.url ?? "",
+
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
               ),
               Positioned(
                 top: 12,
@@ -565,11 +582,15 @@ class PropertyCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      property.title ?? "",
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    Expanded(
+                      child: Text(
+                        property.title ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     const Icon(Icons.star_border),
@@ -583,14 +604,17 @@ class PropertyCard extends StatelessWidget {
                   children: [
                     const Icon(Icons.location_on, size: 16, color: Colors.grey),
                     const SizedBox(width: 5),
-                    FittedBox(child: Text(property.address ?? "")),
+                    Expanded(
+                      child: Text(
+                        property.address ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ),
                     const SizedBox(width: 10),
                     const Icon(Icons.navigation, size: 16, color: Colors.grey),
                     const SizedBox(width: 5),
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Text("${property.distance} miles"),
-                    ),
+                    Text("${property.distance} miles"),
                   ],
                 ),
 

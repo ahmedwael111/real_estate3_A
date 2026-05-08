@@ -3,12 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:real_estate3_a/Features/Property%20Details/domin/entities/user/user.reveiw.enitity.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/property_details_view_body.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentation/widgets/propery_details_view_body.dart';
+import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 import 'package:real_estate3_a/core/constant/snakbar.dart';
 
 import '../domin/entities/property/property.details.entity.dart';
-
 
 class UserReviewScreen extends StatelessWidget {
   const UserReviewScreen({super.key, required this.propertyDetailsEntity});
@@ -101,13 +100,13 @@ class RatingSummary extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.grey),
                 ),
-                // child:  CachedImageWidget(
-                //   imageUrl: userReviewEntity.user?.image  ?? '',
-                // ),
+                child:  CachedImageWidget(
+                  imageUrl: userReviewEntity.user?.name  ?? '',
+                ),
               ),
               SizedBox(width: 10),
               Text(
-                "Leslie Alexander",
+                userReviewEntity.user?.name ?? '',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ],
@@ -156,10 +155,10 @@ class RatingSummary extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                // child:
-                //  CachedImageWidget(
-                //   imageUrl: propertyDetailsEntity.images?[index].url ?? "",
-                // ),
+                child:
+                 CachedImageWidget(
+                  imageUrl: propertyDetailsEntity.images?[index].url ?? "",
+                ),
               ),
             ),
           ),

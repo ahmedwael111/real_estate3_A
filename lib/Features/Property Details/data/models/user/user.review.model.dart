@@ -1,9 +1,11 @@
+import 'package:real_estate3_a/Features/Property%20Details/data/models/property/user.details.model.dart';
+
 class UserReviewMode {
   int? id;
   int? rating;
   String? comment;
   DateTime? createdAt;
-  UserReviewMode? user;
+  UserModel? user;
 
   UserReviewMode({
     this.id,
@@ -23,17 +25,17 @@ class UserReviewMode {
           : DateTime.parse(json['created_at'] as String),
       user: json['user'] == null
           ? null
-          : UserReviewMode.fromJson(json['user'] as Map<String, dynamic>),
+          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'rating': rating,
-      'comment': comment,
-      'created_at': createdAt?.toIso8601String(),
-      'user': user?.toJson(),
-    };
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     'id': id,
+  //     'rating': rating,
+  //     'comment': comment,
+  //     'created_at': createdAt?.toIso8601String(),
+  //     'user': user?.(),
+  //   };
+  // }
 }

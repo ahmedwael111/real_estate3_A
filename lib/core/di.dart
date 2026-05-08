@@ -10,7 +10,7 @@ import 'security/security_helper.dart';
 import 'api/dio_helper.dart';
 import 'api/internet_connection_checker.dart';
 
-final GetIt getIt = GetIt.instance;
+final getIt = GetIt.instance;
 
 Future<void> initAppModule() async {
   final cacheHelper = CacheHelper();
@@ -35,7 +35,7 @@ Future<void> initAppModule() async {
   getIt.registerLazySingleton<NetworkInfo>(
     () => NetworkInfoImpl(getIt<InternetConnectionChecker>()),
   );
-  
+
   // Property Details
   getIt.registerLazySingleton<PropertyDetailsRepo>(
     () => PropertyDetailsRepoImpl(),
@@ -50,8 +50,7 @@ Future<void> initAppModule() async {
     ),
   );
   getIt.registerLazySingleton<ReviewsPropertyCubit>(
-    () => ReviewsPropertyCubit(
-      propertyDetailsRepo: getIt<PropertyDetailsRepo>(),
-    ),
+    () =>
+        ReviewsPropertyCubit(propertyDetailsRepo: getIt<PropertyDetailsRepo>()),
   );
 }

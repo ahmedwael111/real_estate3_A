@@ -7,7 +7,7 @@ class Agent {
   String? bio;
   dynamic licenseNumber;
   String? company;
-  User? user;
+  UserEntity? user;
 
   Agent({
     this.id,
@@ -25,7 +25,7 @@ class Agent {
       bio: json.bio,
       licenseNumber: json.licenseNumber,
       company: json.company,
-      user: json.user != null ? User.fromModel(json.user!) : null,
+      user: json.user != null ? UserEntity.fromModel(json.user!) : null,
     );
   }
 
