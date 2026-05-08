@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/view_360_view.dart';
 import 'package:real_estate3_a/Features/Property%20Details/presentaion/widgets/review_details_section.dart';
+import 'package:real_estate3_a/Features/map%20feature/presentation/map_view.dart';
 import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 import 'package:real_estate3_a/core/constant/custom_button.dart';
@@ -60,15 +61,6 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
               backgroundColor: Colors.transparent,
               elevation: 1,
               shadowColor: Colors.black,
-              // centerTitle: true,
-              // title: const Text(
-              //   "Property Detail",
-              //   style: TextStyle(
-              //     color: Colors.black,
-              //     fontSize: 18,
-              //     fontWeight: FontWeight.w600,
-              //   ),
-              // ),
               flexibleSpace: Container(
                 height: 134,
                 padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
@@ -90,7 +82,17 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      _circleIcon(Icons.notifications_none),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MapRealStateView(),
+                            ),
+                          );
+                        },
+                        child: _circleIcon(Icons.notifications_none),
+                      ),
                     ],
                   ),
                 ),

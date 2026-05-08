@@ -30,6 +30,7 @@ class ReviewDetailsSection extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (_) => UserReviewsViewProvider(
                           propertyDetailsEntity: propertyDetailsEntity,
+                          reviews: state.reviews,
                         ),
                       ),
                     );
@@ -57,18 +58,21 @@ class ReviewDetailsSection extends StatelessWidget {
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     SizedBox(width: 4),
                     Text(
-                      propertyDetailsEntity.rate ?? "",
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      " ${state.reviews.first.rating?.toDouble() ?? "no rating"}",
+                      style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(width: 6),
                     Text(
-                      '${propertyDetailsEntity.rate} ratings',
+                      '(${state.reviews.length} ratings)',
                       style: TextStyle(color: Colors.grey),
                     ),
                     SizedBox(width: 10),
                     Text("•", style: TextStyle(color: Colors.grey)),
                     SizedBox(width: 10),
-                    Text("35 Reviews", style: TextStyle(color: Colors.grey)),
+                    Text(
+                      '${state.reviews.length} Reviews',
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ),
 
@@ -88,9 +92,8 @@ class ReviewDetailsSection extends StatelessWidget {
                             _reviewImage(
                               propertyDetailsEntity.images![index].url ?? "",
                             ),
-
                             Container(
-                              width: 80,
+                              width: 120,
                               height: 80,
                               decoration: BoxDecoration(
                                 color: Colors.black.withOpacity(0.5),
@@ -146,14 +149,17 @@ class ReviewDetailsSection extends StatelessWidget {
 
                 /// Stars + Time
                 Row(
-                  children: const [
+                  children: [
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     Icon(Icons.star, color: Colors.amber, size: 18),
                     SizedBox(width: 8),
-                    Text("5/5", style: TextStyle(color: Colors.grey)),
+                    Text(
+                      "${state.reviews.first.rating ?? "no rating"}/5",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                     SizedBox(width: 10),
                     Text("1 week ago", style: TextStyle(color: Colors.grey)),
                   ],
@@ -162,8 +168,8 @@ class ReviewDetailsSection extends StatelessWidget {
                 const SizedBox(height: 12),
 
                 /// Title
-                const Text(
-                  "A Beautiful, Welcoming Home",
+                Text(
+                  state.reviews.first.comment ?? "No Title",
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 ),
 
@@ -190,7 +196,13 @@ class ReviewDetailsSection extends StatelessWidget {
   Widget _reviewImage(String? url) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
-      child: CachedImageWidget(imageUrl: url ?? "", fit: BoxFit.cover),
+
+      child: CachedImageWidget(
+        imageUrl: url ?? "",
+        fit: BoxFit.cover,
+        height: 80,
+        width: 120,
+      ),
     );
   }
 }

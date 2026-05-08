@@ -23,7 +23,7 @@ class RealStateApp3A extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Real Estate 3A',
           theme: ThemeData(primarySwatch: Colors.blue),
-          home: PropertyDetailsView(),
+          home: PropertyDetailsView (),
         );
       },
     );

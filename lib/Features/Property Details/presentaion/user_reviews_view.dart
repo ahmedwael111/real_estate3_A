@@ -10,8 +10,13 @@ import 'package:real_estate3_a/core/constant/snakbar.dart';
 import '../domin/entities/property/property.details.entity.dart';
 
 class UserReviewScreen extends StatelessWidget {
-  const UserReviewScreen({super.key, required this.propertyDetailsEntity});
+  const UserReviewScreen({
+    super.key,
+    required this.propertyDetailsEntity,
+    required this.reviews,
+  });
   final PropertyDetailsEntity propertyDetailsEntity;
+  final List<UserReviewEnitity> reviews;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ReviewsPropertyCubit, ReviewsPropertyState>(
@@ -32,7 +37,7 @@ class UserReviewScreen extends StatelessWidget {
             body: SafeArea(
               child: Column(
                 children: [
-                  const CustomReviewAppBar(),
+                  CustomReviewAppBar(reviews: reviews),
                   Expanded(
                     child: ListView.builder(
                       itemCount: state.reviews.length,
@@ -100,13 +105,14 @@ class RatingSummary extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.grey),
                 ),
-                child:  CachedImageWidget(
-                  imageUrl: userReviewEntity.user?.name  ?? '',
+                child: CachedImageWidget(
+                  imageUrl: userReviewEntity.user?.image ?? '',
+                  fit: BoxFit.cover,
                 ),
               ),
               SizedBox(width: 10),
               Text(
-                userReviewEntity.user?.name ?? '',
+                userReviewEntity.user?.name ?? ' unknown user ',
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),
             ],
@@ -116,14 +122,17 @@ class RatingSummary extends StatelessWidget {
 
           /// Stars + Time
           Row(
-            children: const [
+            children: [
               Icon(Icons.star, color: Colors.amber, size: 18),
               Icon(Icons.star, color: Colors.amber, size: 18),
               Icon(Icons.star, color: Colors.amber, size: 18),
               Icon(Icons.star, color: Colors.amber, size: 18),
               Icon(Icons.star, color: Colors.amber, size: 18),
               SizedBox(width: 8),
-              Text("5/5", style: TextStyle(color: Colors.grey)),
+              Text(
+                "${userReviewEntity.rating ?? 'no rating'} /5",
+                style: TextStyle(color: Colors.grey),
+              ),
               SizedBox(width: 10),
               Text("1 week ago", style: TextStyle(color: Colors.grey)),
             ],
@@ -132,8 +141,8 @@ class RatingSummary extends StatelessWidget {
           const SizedBox(height: 12),
 
           /// Title
-          const Text(
-            "A Beautiful, Welcoming Home",
+          Text(
+            userReviewEntity.comment ?? 'No Title',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
 
@@ -155,9 +164,10 @@ class RatingSummary extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child:
-                 CachedImageWidget(
+                child: CachedImageWidget(
                   imageUrl: propertyDetailsEntity.images?[index].url ?? "",
+                  fit: BoxFit.cover,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -181,7 +191,8 @@ class RatingSummary extends StatelessWidget {
 
 class CustomReviewAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  const CustomReviewAppBar({super.key});
+  const CustomReviewAppBar({super.key, required this.reviews});
+  final List<UserReviewEnitity> reviews;
 
   @override
   Size get preferredSize => const Size.fromHeight(120);
@@ -205,7 +216,10 @@ class CustomReviewAppBar extends StatelessWidget
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _circleIcon(Icons.arrow_back),
+                  _circleIcon(
+                    Icons.arrow_back,
+                    ontap: () => Navigator.pop(context),
+                  ),
                   const Text(
                     "User Review",
                     style: TextStyle(
@@ -226,19 +240,22 @@ class CustomReviewAppBar extends StatelessWidget
                 children: [
                   const Icon(Icons.star, color: Colors.orange, size: 20),
                   const SizedBox(width: 6),
-                  const Text(
-                    "4.9",
+                  Text(
+                    "${reviews.first.rating?.toDouble() ?? "no rating"}",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(width: 4),
-                  const Text("/5.0", style: TextStyle(color: Colors.grey)),
+
+                  Text("/5.0", style: TextStyle(color: Colors.grey)),
                   const SizedBox(width: 10),
-                  const Text("10 Rating", style: TextStyle(color: Colors.grey)),
+                  Text(
+                    "${reviews.length} Rating",
+                    style: TextStyle(color: Colors.grey),
+                  ),
                   const SizedBox(width: 6),
                   const Text("•", style: TextStyle(color: Colors.grey)),
                   const SizedBox(width: 6),
-                  const Text(
-                    "35 Reviews",
+                  Text(
+                    "${reviews.length} Reviews",
                     style: TextStyle(color: Colors.grey),
                   ),
                 ],
@@ -252,15 +269,18 @@ class CustomReviewAppBar extends StatelessWidget
     );
   }
 
-  Widget _circleIcon(IconData icon) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.black),
+  Widget _circleIcon(IconData icon, {VoidCallback? ontap}) {
+    return GestureDetector(
+      onTap: ontap,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black),
+        ),
+        child: Icon(icon, size: 24),
       ),
-      child: Icon(icon, size: 24),
     );
   }
 }
