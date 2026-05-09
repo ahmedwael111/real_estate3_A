@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart' as Assets;
+import 'package:real_estate3_a/core/constants/app_assets.dart';
+// import 'package:flutter_svg/svg.dart' as Assets;
 
 import 'custom_png_image.dart';
 
-class CustomLogo extends StatelessWidget {
-  const CustomLogo({
+class CustomPlaceholderImage extends StatelessWidget {
+  const CustomPlaceholderImage({
     super.key,
     this.height,
     this.width,
-    this.fit = BoxFit.contain,
+    this.fit = BoxFit.cover,
   });
 
   final double? height;
@@ -18,7 +19,7 @@ class CustomLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomPngImage(
-      path: 'assets/images/logo.png', //Assets.svg.logo
+      path: Assets.assetsPlaceholder, //Assets.svg.logo
       height: height,
       width: width,
       fit: fit,

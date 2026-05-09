@@ -1,6 +1,6 @@
   import 'package:dio/dio.dart';
   import 'package:flutter/foundation.dart';
-  import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
   import '../constant/app_constants.dart';
   import '../di.dart';
@@ -13,7 +13,7 @@
     static Future<void> init() async {
       dio = Dio(
         BaseOptions(
-          baseUrl: AppConstants.BaseUrl,
+          baseUrl: AppConstants.baseUrl,
           receiveDataWhenStatusError: true,
         ),
       );
@@ -29,7 +29,7 @@
       }
     }
 
-    static Future<void> headers({bool withAuth = false}) async {
+    Future<void> headers({bool withAuth = false}) async {
       final token = getIt<AuthStorage>().token;
       final lang = AppFunctions.getLanguageCode();
       final tokenValue = token?.trim();
@@ -45,7 +45,7 @@
       };
     }
 
-    static Future<Response> getData({
+    Future<Response> getData({
       required String url,
       Map<String, dynamic>? query,
       bool appendAuthParams = false,
@@ -69,7 +69,7 @@
       return dio!.get(url, queryParameters: fullQuery.isEmpty ? null : fullQuery);
     }
 
-    static Future<Response> postData({
+    Future<Response> postData({
       required String url,
       required dynamic data,
       Map<String, dynamic>? query,
@@ -93,7 +93,7 @@
       return dio!.post(finalUrl, data: data, queryParameters: query);
     }
 
-    static Future<Response> putData({
+    Future<Response> putData({
       required String url,
       required dynamic data,
       Map<String, dynamic>? query,
@@ -114,7 +114,7 @@
       return dio!.put(finalUrl, data: data, queryParameters: query);
     }
 
-    static Future<Response> putDataWithAuth({
+    Future<Response> putDataWithAuth({
       required String url,
       required dynamic data,
       Map<String, dynamic>? query,
@@ -137,7 +137,7 @@
       return dio!.put(finalUrl, data: data, queryParameters: query);
     }
 
-    static Future<Response> deleteData({
+    Future<Response> deleteData({
       required String url,
       Map<String, dynamic>? query,
     }) async {
@@ -151,7 +151,7 @@
       );
     }
 
-    static Future<Response> deleteDataWithAuth({
+    Future<Response> deleteDataWithAuth({
       required String url,
       dynamic data,
       Map<String, dynamic>? query,
@@ -162,7 +162,7 @@
       return dio!.delete(url, data: data, queryParameters: query);
     }
 
-    static Future<Response> patchData({
+    Future<Response> patchData({
       required String url,
       dynamic data,
       Map<String, dynamic>? query,
@@ -172,7 +172,7 @@
       return dio!.patch(url, data: data, queryParameters: query);
     }
 
-    static Future<Response> postMultipartData({
+    Future<Response> postMultipartData({
       required String url,
       required FormData formData,
       bool withAuth = false,

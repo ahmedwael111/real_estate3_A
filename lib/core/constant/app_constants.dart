@@ -1,8 +1,8 @@
 class AppConstants {
   // API Configuration
-  static const String BaseUrl = 'https://real.newcinderella.online';
+  static const String baseUrl = 'https://real.newcinderella.online';
 
-//                            163|qKnyfUm7VxkFqUE4WsXsCO3EayRUawd9VaEcLYLnfa197f5a
+  //                            163|qKnyfUm7VxkFqUE4WsXsCO3EayRUawd9VaEcLYLnfa197f5a
   // Auth Endpoints
   static const String registerEndpoint = '/api/v1/auth/register';
   static const String loginEndpoint = '/api/v1/auth/login';
@@ -16,7 +16,7 @@ class AppConstants {
       '/api/auth/change-password-with-restpassword-otp';
 
   // Dynamic Endpoints
-  static const String citiesEndpoint = '/api/dynamic/cities';
+  static const String getPropertyDetailsEndpoint = '/api/v1/properties/';
 
   // Address Endpoints
   static const String addressesEndpoint = '/api/addresses';
