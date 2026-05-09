@@ -74,7 +74,10 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _circleIcon(Icon(Icons.arrow_back, size: 24)),
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: _circleIcon(Icon(Icons.arrow_back, size: 24)),
+                      ),
                       const Text(
                         "Property Details",
                         style: TextStyle(
@@ -208,7 +211,10 @@ class HeaderSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
               ),
             ),
-            child: Icon(Icons.arrow_back, color: Colors.white),
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Icon(Icons.arrow_back, color: Colors.white),
+            ),
           ),
         ),
         Positioned(

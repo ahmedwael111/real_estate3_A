@@ -19,7 +19,7 @@ class ReviewDetailsSection extends StatelessWidget {
       builder: (context, state) {
         if (state is ReviewsPropertyLoaded) {
           return state.reviews.isEmpty
-              ? Text('No Reviews')
+              ? SizedBox(height: 12)
               : Container(
                   margin: const EdgeInsets.only(top: 10),
                   padding: const EdgeInsets.all(16),

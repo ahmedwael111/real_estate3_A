@@ -12,5 +12,7 @@ abstract class PropertyDetailsRepo {
   Future<Either<Failure, List<SimilarPropertyEntity>>> getPropertySimilars(
     int propertyId,
   );
-  Future<Either<Failure, List<UserReviewEnitity>>> getPropertyReviews(int propertyId);
+  Future<Either<Failure, List<UserReviewEnitity>>> getPropertyReviews(
+    int propertyId,
+  );
 }
