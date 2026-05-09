@@ -12,6 +12,7 @@ import 'package:real_estate3_a/core/constant/custom_button.dart';
 import 'package:real_estate3_a/core/constants/app_assets.dart';
 import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/property.details.entity.dart';
 import 'package:real_estate3_a/features/Property%20Details/domin/entities/similar/similar.property.entity.dart';
+import 'package:real_estate3_a/features/payment/presentation/screens/payment_details_screen.dart';
 
 class ProperyDetailsViewBody extends StatefulWidget {
   const ProperyDetailsViewBody({
@@ -785,12 +786,16 @@ class BottomButtons extends StatelessWidget {
                 Expanded(
                   child: CustomButton(
                     onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => const PropertyDetailstext(),
-                      //   ),
-                      // );
+                      propertyDetailsEntity.id != null
+                          ? Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PaymentDetailsScreen(
+                                  propertyId: propertyDetailsEntity.id ?? 0,
+                                ),
+                              ),
+                            )
+                          : null;
                     },
                     data: "Book a Call",
                     color: Color(0xFF1597A8),

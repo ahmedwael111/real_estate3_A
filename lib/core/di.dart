@@ -19,6 +19,13 @@ import 'save data/save_data.dart';
 import 'security/security_helper.dart';
 import 'api/dio_helper.dart';
 import 'api/internet_connection_checker.dart';
+import '../features/payment/data/datasources/payment_remote_data_source.dart';
+import '../features/payment/data/datasources/payment_remote_data_source_impl.dart';
+import '../core/api/api_consumer.dart';
+import '../features/payment/data/repositories/payment_repository_impl.dart';
+import '../features/payment/domain/repositories/payment_repository.dart';
+import '../features/payment/domain/usecases/create_order_usecase.dart';
+import '../features/payment/presentation/cubit/payment_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -86,5 +93,23 @@ Future<void> initAppModule() async {
   getIt.registerLazySingleton<ReviewsPropertyCubit>(
     () =>
         ReviewsPropertyCubit(propertyDetailsRepo: getIt<PropertyDetailsRepo>()),
+  );
+  // Payment feature dependencies
+  getIt.registerLazySingleton<PaymentRemoteDataSource>(
+    () => PaymentRemoteDataSourceImpl(api: ApiConsumer()),
+  );
+
+  getIt.registerLazySingleton<PaymentRepository>(
+    () => PaymentRepositoryImpl(
+      remoteDataSource: getIt<PaymentRemoteDataSource>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CreateOrderUseCase>(
+    () => CreateOrderUseCase(repository: getIt<PaymentRepository>()),
+  );
+
+  getIt.registerFactory<PaymentCubit>(
+    () => PaymentCubit(createOrderUseCase: getIt<CreateOrderUseCase>()),
   );
 }
