@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/property_details_view_body.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/property_details_view_body.dart';
 import 'package:real_estate3_a/core/constant/snakbar.dart';
 
 class PropertyDetailsViewBolcConsumer extends StatelessWidget {
-  const PropertyDetailsViewBolcConsumer({super.key});
-
+  const PropertyDetailsViewBolcConsumer({super.key, required this.propertyId});
+  final int propertyId;
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PropertyDetailsCubit, PropertyDetailsState>(
@@ -25,6 +25,7 @@ class PropertyDetailsViewBolcConsumer extends StatelessWidget {
         if (state is PropertyDetailsSuccess) {
           return ProperyDetailsViewBody(
             propertyDetailsEntity: state.propertyDetailsEntity,
+            propertyId: propertyId,
           );
         }
         if (state is PropertyDetailsFailure) {

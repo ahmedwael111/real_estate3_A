@@ -58,7 +58,7 @@ class PropertyCard extends StatelessWidget {
                           height: height * 0.18,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                          errorBuilder: (_, _, _) => _imagePlaceholder(),
                         )
                       : _imagePlaceholder(),
                 ),
@@ -90,7 +90,7 @@ class PropertyCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 6.w),
-                    FavButton(propertyId: property.id),
+                      FavButton(propertyId: property.id),
                     ],
                   ),
                   SizedBox(height: 4.h),
@@ -102,7 +102,6 @@ class PropertyCard extends StatelessWidget {
                         height: 13.h,
                       ),
                       SizedBox(width: 4.w),
-
 
                       Expanded(
                         child: Text(
@@ -217,7 +216,7 @@ class PropertyCard extends StatelessWidget {
                           height: 170.h,
                           width: 170.w,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
+                          errorBuilder: (_, _, _) =>
                               _imagePlaceholderSquare(170.w, 170.h),
                         )
                       : _imagePlaceholderSquare(170.w, 170.h),
@@ -251,7 +250,7 @@ class PropertyCard extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 6.w),
-                       FavButton(propertyId: property.id),
+                        FavButton(propertyId: property.id),
                       ],
                     ),
                     SizedBox(height: 12.h),
@@ -314,7 +313,7 @@ class PropertyCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
-                            color:Colors.black,
+                            color: Colors.black,
                           ),
                         ),
                         Row(

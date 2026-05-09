@@ -17,7 +17,7 @@ import 'Terms_and_Conditions_Text.dart';
 import 'forgot_Password_Text.dart';
 
 class Signinviewbody extends StatefulWidget {
-  const Signinviewbody({Key? key}) : super(key: key);
+  const Signinviewbody({super.key});
 
   @override
   State<Signinviewbody> createState() => _SigninviewbodyState();
@@ -67,8 +67,10 @@ class _SigninviewbodyState extends State<Signinviewbody> {
                   if (formKey.currentState!.validate()) {
                     final email = emailController.text;
                     final password = passwordController.text;
-                  context.read<AuthCubit>().login(email: email, password: password);
-
+                    context.read<AuthCubit>().login(
+                      email: email,
+                      password: password,
+                    );
                   } else {
                     setState(() {
                       autovalidateMode = AutovalidateMode.always;

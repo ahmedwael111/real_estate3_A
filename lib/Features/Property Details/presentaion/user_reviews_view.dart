@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_estate3_a/Features/Property%20Details/domin/entities/user/user.reveiw.enitity.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/property_details_view_body.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/user/user.reveiw.enitity.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/property_details_view_body.dart';
 import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 import 'package:real_estate3_a/core/constant/snakbar.dart';
-
-import '../domin/entities/property/property.details.entity.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/property.details.entity.dart';
 
 class UserReviewScreen extends StatelessWidget {
   const UserReviewScreen({

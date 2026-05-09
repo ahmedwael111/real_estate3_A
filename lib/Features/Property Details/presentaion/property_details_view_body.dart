@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/view_360_view.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/widgets/review_details_section.dart';
-import 'package:real_estate3_a/Features/map%20feature/presentation/map_view.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/view_360_view.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/widgets/review_details_section.dart';
+import 'package:real_estate3_a/features/map%20feature/presentation/map_view.dart';
 import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 import 'package:real_estate3_a/core/constant/custom_button.dart';
-import 'package:real_estate3_a/core/constant/custom_png_image.dart';
 import 'package:real_estate3_a/core/constants/app_assets.dart';
-
-import '../domin/entities/property/property.details.entity.dart';
-import '../domin/entities/similar/similar.property.entity.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/property.details.entity.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/similar/similar.property.entity.dart';
 
 class ProperyDetailsViewBody extends StatefulWidget {
   const ProperyDetailsViewBody({
     super.key,
     required this.propertyDetailsEntity,
+    required this.propertyId,
   });
   final PropertyDetailsEntity propertyDetailsEntity;
+  final int propertyId;
   @override
   State<ProperyDetailsViewBody> createState() => _ProperyDetailsViewBodyState();
 }
@@ -122,8 +122,9 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
                   ),
                   ReviewDetailsSection(
                     propertyDetailsEntity: widget.propertyDetailsEntity,
+                    propertyId: widget.propertyId,
                   ),
-                  SimilarsProperityDetails(),
+                  SimilarsProperityDetails(propertyId: widget.propertyId),
                 ],
               ),
             ),
@@ -136,7 +137,8 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
 }
 
 class SimilarsProperityDetails extends StatelessWidget {
-  const SimilarsProperityDetails({super.key});
+  const SimilarsProperityDetails({super.key, required this.propertyId});
+  final int propertyId;
 
   @override
   Widget build(BuildContext context) {
@@ -655,7 +657,7 @@ class PropertyCard extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                /// FEATURES
+                /// features
                 Wrap(
                   spacing: 10,
                   runSpacing: 10,

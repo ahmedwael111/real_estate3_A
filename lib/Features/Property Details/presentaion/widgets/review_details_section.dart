@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:real_estate3_a/Features/Property%20Details/domin/entities/property/property.details.entity.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/widgets/user_review_view_provider.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/widgets/user_review_view_provider.dart';
 import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/property.details.entity.dart';
 
 class ReviewDetailsSection extends StatelessWidget {
-  const ReviewDetailsSection({super.key, required this.propertyDetailsEntity});
+  const ReviewDetailsSection({super.key, required this.propertyDetailsEntity, required this.propertyId});
   final PropertyDetailsEntity propertyDetailsEntity;
-
+  final int propertyId;
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ReviewsPropertyCubit, ReviewsPropertyState>(
@@ -31,6 +31,7 @@ class ReviewDetailsSection extends StatelessWidget {
                         builder: (_) => UserReviewsViewProvider(
                           propertyDetailsEntity: propertyDetailsEntity,
                           reviews: state.reviews,
+                          propertyId: propertyId,
                         ),
                       ),
                     );

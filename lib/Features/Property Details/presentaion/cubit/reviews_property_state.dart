@@ -9,7 +9,7 @@ final class ReviewsPropertyLoading extends ReviewsPropertyState {}
 
 final class ReviewsPropertyLoaded extends ReviewsPropertyState {
   final List<UserReviewEnitity> reviews;
-  ReviewsPropertyLoaded(this.reviews);
+  ReviewsPropertyLoaded( this.reviews);
 }
 
 final class ReviewsPropertyError extends ReviewsPropertyState {

@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/property_details_view.dart';
 
 import '../../../../Home/presentation/views/widgets/propertyCard.dart';
 import '../../../domain/entities/favoriteEntity.dart';
@@ -10,11 +10,7 @@ class FavoriteList extends StatelessWidget {
   final List<FavoriteEntity> items;
   final FavoriteState state;
 
-  const FavoriteList({
-    super.key,
-    required this.items,
-    required this.state,
-  });
+  const FavoriteList({super.key, required this.items, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +18,7 @@ class FavoriteList extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
-      separatorBuilder: (_, __) => SizedBox(height: 14.h),
+      separatorBuilder: (_, _) => SizedBox(height: 14.h),
       itemBuilder: (_, i) {
         final fav = items[i];
 
@@ -34,9 +30,20 @@ class FavoriteList extends StatelessWidget {
         }
         return Stack(
           children: [
-            PropertyCard(property: fav.property, isWide: true),
-            if (isLoading)
-              const Center(child: CircularProgressIndicator()),
+            PropertyCard(
+              property: fav.property,
+              isWide: true,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        PropertyDetailsView(propertyId: fav.property.id),
+                  ),
+                );
+              },
+            ),
+            if (isLoading) const Center(child: CircularProgressIndicator()),
           ],
         );
       },

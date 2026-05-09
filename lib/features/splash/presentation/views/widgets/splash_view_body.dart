@@ -7,7 +7,7 @@ import 'package:real_estate3_a/features/onBoarding/presentation/views/onBoarding
 import 'package:real_estate3_a/generated/assets.dart';
 
 class SplashViewBody extends StatefulWidget {
-  const SplashViewBody({Key? key}) : super(key: key);
+  const SplashViewBody({super.key});
 
   @override
   State<SplashViewBody> createState() => _SplashViewBodyState();
@@ -25,14 +25,14 @@ class _SplashViewBodyState extends State<SplashViewBody> {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-          children: [Image.asset(Assets.assetsSplashPng1)]),
+        children: [Image.asset(Assets.assetsSplashPng1)],
+      ),
     );
   }
+
   void ExecuteNavigation() {
     Future.delayed(const Duration(milliseconds: 2500), () {
-
       AppFunctions.navigateTo(context, Onboardingview());
-
     });
   }
 }

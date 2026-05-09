@@ -3,7 +3,6 @@ import 'package:real_estate3_a/features/Home/domain/entities/property_cardEntity
 
 import 'categoryEntity.dart';
 
-
 class HomeDataEntity extends Equatable {
   final List<CategoryEntity> categories;
   final List<PropertyCardEntity> bestSelling;

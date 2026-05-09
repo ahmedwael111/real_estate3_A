@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:real_estate3_a/features/Home/presentation/views/widgets/price_field.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/property_details_view.dart';
 import 'package:real_estate3_a/generated/assets.dart';
 
 import '../../../domain/entities/property_cardEntity.dart';
@@ -122,11 +123,20 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
                       physics: const BouncingScrollPhysics(),
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       itemCount: items.length,
-                      separatorBuilder: (_, __) => SizedBox(height: 14.h),
+                      separatorBuilder: (_, _) => SizedBox(height: 14.h),
                       itemBuilder: (_, index) => PropertyCard(
                         property: items[index],
                         isWide: true,
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PropertyDetailsView(
+                                propertyId: items[index].id,
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
             ),
@@ -261,7 +271,7 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 20.w),
         itemCount: categories.length,
-        separatorBuilder: (_, __) => SizedBox(width: 10.w),
+        separatorBuilder: (_, _) => SizedBox(width: 10.w),
         itemBuilder: (context, index) => CategoryChip(
           category: categories[index],
           isSelected: _selectedCategoryIndex == index,

@@ -10,11 +10,11 @@ import 'package:real_estate3_a/features/profile/domain/repo/profileRepo.dart';
 import '../features/Home/data/RemoteDataSource/HomeRemoteDataSource.dart';
 import '../features/Home/data/repo/HomeRepoImpl.dart';
 import '../features/Home/domain/repo/HomeRepo.dart';
-import 'package:real_estate3_a/Features/Property%20Details/data/repos/property_details_repo_impl.dart';
-import 'package:real_estate3_a/Features/Property%20Details/domin/repos/propety_details_repo.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
-import 'package:real_estate3_a/Features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/data/repos/property_details_repo_impl.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/repos/propety_details_repo.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
 import 'save data/save_data.dart';
 import 'security/security_helper.dart';
 import 'api/dio_helper.dart';
@@ -37,28 +37,27 @@ Future<void> initAppModule() async {
 
   getIt.registerLazySingleton<AuthRepoImpl>(() => AuthRepoImpl());
 
-
   getIt.registerLazySingleton<HomeRepository>(
-        () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()),
+    () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()),
   );
   getIt.registerLazySingleton<HomeRemoteDataSource>(
-        () => const HomeRemoteDataSourceImpl(),
+    () => const HomeRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<FavoriteRemoteDataSource>(
-        () => const FavoriteRemoteDataSourceImpl(),
+    () => const FavoriteRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<FavoriteRepository>(
-        () =>  FavoriteRepositoryImpl(getIt<FavoriteRemoteDataSource>()),
+    () => FavoriteRepositoryImpl(getIt<FavoriteRemoteDataSource>()),
   );
 
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
-        () => ProfileRemoteDataSourceImpl(),
+    () => ProfileRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<ProfileRepository>(
-        () => ProfileRepositoryImpl(remoteDataSource: getIt<ProfileRemoteDataSource>()),
+    () => ProfileRepositoryImpl(
+      remoteDataSource: getIt<ProfileRemoteDataSource>(),
+    ),
   );
-
-
 
   await DioHelper.init();
   getIt.registerLazySingleton<DioHelper>(() => DioHelper());

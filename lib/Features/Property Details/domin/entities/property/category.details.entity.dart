@@ -1,16 +1,16 @@
 import '../../../data/models/property/category.details.model.dart';
 
-class Category {
+class CategoryAEntity {
   int? id;
   String? name;
   String? slug;
   String? description;
   int? sortOrder;
 
-  Category({this.id, this.name, this.slug, this.description, this.sortOrder});
+  CategoryAEntity({this.id, this.name, this.slug, this.description, this.sortOrder});
 
-  factory Category.fromModel(CategoryModel json) {
-    return Category(
+  factory CategoryAEntity.fromModel(CategoryModel json) {
+    return CategoryAEntity(
       id: json.id,
       name: json.name,
       slug: json.slug,

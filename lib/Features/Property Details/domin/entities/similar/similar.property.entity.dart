@@ -1,4 +1,4 @@
-import 'package:real_estate3_a/Features/Property%20Details/data/models/similar/similar.property.dart';
+import 'package:real_estate3_a/features/Property%20Details/data/models/similar/similar.property.dart';
 
 import 'category.property.entity.dart';
 import 'image.property.entity.dart';

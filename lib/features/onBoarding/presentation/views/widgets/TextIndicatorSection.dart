@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/core/funcations/app_functions.dart';
@@ -25,8 +24,7 @@ class TextIndicatorSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
-         TextsPageView(pageController: pageController),
-
+          TextsPageView(pageController: pageController),
 
           SizedBox(height: 18.h),
 
@@ -56,7 +54,7 @@ class TextIndicatorSection extends StatelessWidget {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeIn,
                         );
-                      }else{
+                      } else {
                         AppFunctions.navigateTo(context, SigninView());
                       }
                     },

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,9 +7,9 @@ import '../../home_cubit/home_cubit.dart';
 import 'CategoryChip.dart';
 
 class Homecategorylist extends StatefulWidget {
-  const Homecategorylist({Key? key,required this.categories}) : super(key: key);
+  const Homecategorylist({super.key, required this.categories});
 
-final List<CategoryEntity> categories;
+  final List<CategoryEntity> categories;
 
   @override
   State<Homecategorylist> createState() => _HomecategorylistState();
@@ -23,7 +21,13 @@ class _HomecategorylistState extends State<Homecategorylist> {
   @override
   Widget build(BuildContext context) {
     final allCategories = [
-      CategoryEntity(id: -1, name: 'All', slug: 'all', description: '', sortOrder: 0),
+      CategoryEntity(
+        id: -1,
+        name: 'All',
+        slug: 'all',
+        description: '',
+        sortOrder: 0,
+      ),
       ...widget.categories,
     ];
     return Padding(
@@ -35,14 +39,16 @@ class _HomecategorylistState extends State<Homecategorylist> {
           physics: const BouncingScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           itemCount: allCategories.length,
-          separatorBuilder: (_, __) => SizedBox(width: 10.w),
+          separatorBuilder: (_, _) => SizedBox(width: 10.w),
           itemBuilder: (context, index) => CategoryChip(
-            category:allCategories[index],
+            category: allCategories[index],
             isSelected: selectedCategoryIndex == index,
             onTap: () {
               setState(() => selectedCategoryIndex = index);
 
-              context.read<HomeCubit>().onCategorySelected(allCategories[index].id);
+              context.read<HomeCubit>().onCategorySelected(
+                allCategories[index].id,
+              );
             },
           ),
         ),
@@ -50,6 +56,7 @@ class _HomecategorylistState extends State<Homecategorylist> {
     );
   }
 }
+
 // Widget _buildCategories(List categories) {
 //   return Padding(
 //     padding: EdgeInsets.only(top: 16.h),
@@ -71,15 +78,3 @@ class _HomecategorylistState extends State<Homecategorylist> {
 //     ),
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
-
-

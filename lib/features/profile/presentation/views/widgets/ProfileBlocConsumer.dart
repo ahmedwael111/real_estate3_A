@@ -5,18 +5,14 @@ import 'package:real_estate3_a/features/profile/presentation/views/widgets/profi
 import '../../cubit/profile_cubit.dart';
 import '../../cubit/profile_state.dart';
 
-
 class ProfileBlocConsumer extends StatefulWidget {
   const ProfileBlocConsumer({super.key});
 
   @override
-  State<ProfileBlocConsumer> createState() =>
-      _ProfileBlocConsumerState();
+  State<ProfileBlocConsumer> createState() => _ProfileBlocConsumerState();
 }
 
-class _ProfileBlocConsumerState
-    extends State<ProfileBlocConsumer> {
-
+class _ProfileBlocConsumerState extends State<ProfileBlocConsumer> {
   @override
   void initState() {
     super.initState();
@@ -27,7 +23,6 @@ class _ProfileBlocConsumerState
   Widget build(BuildContext context) {
     return BlocConsumer<ProfileCubit, ProfileState>(
       listener: (context, state) {
-
         if (state is LogoutSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -39,10 +34,7 @@ class _ProfileBlocConsumerState
 
         if (state is LogoutError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
           );
         }
 
@@ -52,17 +44,12 @@ class _ProfileBlocConsumerState
       },
 
       builder: (context, state) {
-
         if (state is ProfileLoading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (state is ProfileError) {
-          return Center(
-            child: Text(state.message),
-          );
+          return Center(child: Text(state.message));
         }
 
         final profile = state is ProfileLoaded
@@ -73,10 +60,7 @@ class _ProfileBlocConsumerState
         if (profile == null) {
           return const SizedBox();
         }
-        return ProfileViewBody1(
-          state: state,
-          profile:profile
-        );
+        return ProfileViewBody1(state: state, profile: profile);
       },
     );
   }

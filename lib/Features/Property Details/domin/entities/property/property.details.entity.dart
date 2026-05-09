@@ -1,7 +1,8 @@
-import 'package:real_estate3_a/Features/Property%20Details/data/models/property/propety_details.model.dart';
 
-import 'agent.details.entity.dart';
-import 'category.details.entity.dart';
+import 'package:real_estate3_a/features/Property%20Details/data/models/property/propety_details.model.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/agent.details.entity.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/category.details.entity.dart';
+
 import 'image.details.entity.dart';
 
 class PropertyDetailsEntity {
@@ -25,7 +26,7 @@ class PropertyDetailsEntity {
   String? address;
   dynamic distanceKm;
   dynamic distance;
-  Category? category;
+  CategoryAEntity? category;
   List<Image>? images;
   Agent? agent;
 
@@ -78,7 +79,7 @@ class PropertyDetailsEntity {
       distanceKm: json.distanceKm,
       distance: json.distance,
       category: json.category != null
-          ? Category.fromModel(json.category!)
+          ? CategoryAEntity.fromModel(json.category!)
           : null,
       images: (json.images as List?)?.map((e) => Image.fromModel(e)).toList(),
       agent: json.agent != null ? Agent.fromModel(json.agent!) : null,

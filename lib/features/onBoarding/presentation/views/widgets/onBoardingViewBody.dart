@@ -12,7 +12,7 @@ import 'TextIndicatorSection.dart';
 import 'onBoarding_Image.dart';
 
 class Onboardingviewbody extends StatefulWidget {
-  const Onboardingviewbody({Key? key}) : super(key: key);
+  const Onboardingviewbody({super.key});
 
   @override
   State<Onboardingviewbody> createState() => _OnboardingviewbodyState();

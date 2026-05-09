@@ -1,4 +1,4 @@
-import 'package:real_estate3_a/Features/Property%20Details/data/models/property/image.details.model.dart';
+import 'package:real_estate3_a/features/Property%20Details/data/models/property/image.details.model.dart';
 
 class Image {
   int? id;
