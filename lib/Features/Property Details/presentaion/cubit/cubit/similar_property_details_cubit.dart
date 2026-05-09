@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
+import 'package:real_estate3_a/features/Property%20Details/domin/entities/similar/similar.property.entity.dart';
 import 'package:real_estate3_a/features/Property%20Details/domin/repos/propety_details_repo.dart';
 
-import '../../../domin/entities/similar/similar.property.entity.dart';
+
 
 part 'similar_property_details_state.dart';
 

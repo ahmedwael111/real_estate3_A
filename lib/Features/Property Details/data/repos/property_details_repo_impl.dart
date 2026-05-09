@@ -14,7 +14,7 @@ import 'package:real_estate3_a/core/errors/failure.dart';
 import 'package:real_estate3_a/features/Property%20Details/data/models/property/propety_details.model.dart';
 import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/property.details.entity.dart';
 
-import '../models/user/user.review.model.dart' hide UserReviewMode;
+// import '../models/user/user.review.model.dart' hide UserReviewMode;
 
 class PropertyDetailsRepoImpl implements PropertyDetailsRepo {
   PropertyDetailsRepoImpl();

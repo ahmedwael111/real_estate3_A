@@ -58,6 +58,7 @@ class _ProperyDetailsViewBodyState extends State<ProperyDetailsViewBody> {
       appBar: _showAppBar
           ? AppBar(
               toolbarHeight: 94,
+              automaticallyImplyLeading: false,
               backgroundColor: Colors.transparent,
               elevation: 1,
               shadowColor: Colors.black,
@@ -152,7 +153,9 @@ class SimilarsProperityDetails extends StatelessWidget {
         } else if (state is SimilarPropertyDetailsFailure) {
           return Center(child: Text(state.message));
         } else {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: CircularProgressIndicator(color: Color(0xFF1597A8)),
+          );
         }
       },
     );
@@ -688,7 +691,7 @@ class PropertyCard extends StatelessWidget {
                       children: [
                         const Icon(Icons.star, color: Colors.amber, size: 18),
                         const SizedBox(width: 4),
-                        Text(property.rate ?? 0.0.toString()),
+                        Text(property.rate?.toString() ?? 0.0.toString()),
                       ],
                     ),
                   ],

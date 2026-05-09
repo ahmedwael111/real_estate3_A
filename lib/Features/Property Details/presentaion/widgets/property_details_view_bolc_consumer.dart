@@ -33,7 +33,7 @@ class PropertyDetailsViewBolcConsumer extends StatelessWidget {
           return Center(child: Text(errorMessage));
         } else {
           return const Center(
-            child: CircularProgressIndicator(color: Colors.red),
+            child: CircularProgressIndicator(color:  Color(0xFF1597A8)),
           );
         }
       },

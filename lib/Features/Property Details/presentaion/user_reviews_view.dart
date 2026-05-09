@@ -32,34 +32,45 @@ class UserReviewScreen extends StatelessWidget {
       },
       builder: (context, state) {
         if (state is ReviewsPropertyLoaded) {
-          return Scaffold(
-            body: SafeArea(
-              child: Column(
-                children: [
-                  CustomReviewAppBar(reviews: reviews),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.reviews.length,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return RatingSummary(
-                          userReviewEntity: state.reviews[index],
-                          propertyDetailsEntity: propertyDetailsEntity,
-                        );
-                      },
-                    ),
+          return state.reviews.isEmpty
+              ? Text('No reviews yet')
+              : Scaffold(
+                  body: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              CustomReviewAppBar(reviews: reviews),
+                              ListView.builder(
+                                itemCount: state.reviews.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return RatingSummary(
+                                    userReviewEntity: state.reviews[index],
+                                    propertyDetailsEntity:
+                                        propertyDetailsEntity,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      BottomButtons(
+                        propertyDetailsEntity: propertyDetailsEntity,
+                      ),
+                    ],
                   ),
-                  BottomButtons(propertyDetailsEntity: propertyDetailsEntity),
-                ],
-              ),
-            ),
-          );
+                );
         } else if (state is ReviewsPropertyError) {
           return Scaffold(body: Center(child: Text(state.message)));
         } else {
           return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: CircularProgressIndicator(color: Color(0xFF1597A8)),
+            ),
           );
         }
       },
