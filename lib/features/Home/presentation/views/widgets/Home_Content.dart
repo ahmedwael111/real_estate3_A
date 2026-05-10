@@ -179,7 +179,7 @@ class HomeContent extends StatelessWidget {
                     title: "Featured",
                     items: state.filteredFeatured,
                   ),
-                ),
+                ), 
               );
             },
           ),
@@ -210,7 +210,7 @@ class HomeContent extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16.sp,
                 fontWeight: FontWeight.w700,
-                color: const Color(0xFF1A1A2E),
+                color: const Color(0xFF1A1A2E), 
               ),
             ),
           ),
@@ -223,7 +223,7 @@ class HomeContent extends StatelessWidget {
               crossAxisCount: 2,
               crossAxisSpacing: 14.w,
               mainAxisSpacing: 14.h,
-              childAspectRatio: 200 / 220,
+              childAspectRatio: 200 / 300,
             ),
             delegate: SliverChildBuilderDelegate(
               (context, index) => PropertyCard(

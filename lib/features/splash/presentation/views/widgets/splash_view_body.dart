@@ -16,7 +16,7 @@ class SplashViewBody extends StatefulWidget {
 class _SplashViewBodyState extends State<SplashViewBody> {
   @override
   void initState() {
-    ExecuteNavigation();
+    executeNavigation();
     super.initState();
   }
 
@@ -30,9 +30,13 @@ class _SplashViewBodyState extends State<SplashViewBody> {
     );
   }
 
-  void ExecuteNavigation() {
+  void executeNavigation() {
     Future.delayed(const Duration(milliseconds: 2500), () {
-      AppFunctions.navigateTo(context, Onboardingview());
+      if (!context.mounted) {
+        return;
+      } else {
+        AppFunctions.navigateTo(context, Onboardingview());
+      }
     });
   }
 }

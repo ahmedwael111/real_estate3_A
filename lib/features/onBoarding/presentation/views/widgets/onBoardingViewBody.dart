@@ -48,6 +48,7 @@ class _OnboardingviewbodyState extends State<Onboardingviewbody> {
           currentpage: currentpage,
         ),
         SizedBox(height: 30.h),
+        Spacer(),
         Custom_OnBoarding_Button(
           text: "Continue",
           onpress: () {
@@ -55,6 +56,7 @@ class _OnboardingviewbodyState extends State<Onboardingviewbody> {
           },
           buttonColor: AppColors.splashColor,
         ),
+        SizedBox(height: 16.h),
       ],
     );
   }

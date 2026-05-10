@@ -16,7 +16,11 @@ class SignInBody_BlocConsumer extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         if (state is SignInSuccess) {
-          AppFunctions.navigateTo(context, MainView());
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => MainView()),
+            (route) => false,
+          );
         } else if (state is SignInError) {
           ScaffoldMessenger.of(
             context,
