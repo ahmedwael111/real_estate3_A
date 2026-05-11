@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/core/constant/custom_button.dart';
-import 'package:real_estate3_a/core/constant/custom_textformfield.dart';
 import 'package:real_estate3_a/core/funcations/app_functions.dart';
 import 'package:real_estate3_a/core/utils/app_colors.dart';
 import 'package:real_estate3_a/core/utils/app_styles.dart';
@@ -55,6 +54,7 @@ class _SignupviewbodyState extends State<Signupviewbody> {
                 "Sign Up Account",
                 style: getMediumStyle(fontSize: 20, color: Colors.black),
               ),
+              SizedBox(height: 24.h),
               SignUp_textFields(
                 emailController: emailController,
                 nameController: nameController,
@@ -62,7 +62,7 @@ class _SignupviewbodyState extends State<Signupviewbody> {
                 phoneController: phoneController,
               ),
 
-              SizedBox(height: 30.h),
+              SizedBox(height: 90.h),
 
               CustomButton(
                 data: "Register",

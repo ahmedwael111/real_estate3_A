@@ -40,9 +40,10 @@ TextStyle getRegularStyle({
   required double fontSize,
   required Color color,
   double? height,
+  FontWeight? fontWeight,
   TextDecoration? decoration,
 }) {
-  return _getTextStyle(fontSize, FontWeight.w400, color, height, decoration);
+  return _getTextStyle(fontSize,fontWeight ?? FontWeight.w400, color, height, decoration);
 }
 
 TextStyle getMediumStyle({

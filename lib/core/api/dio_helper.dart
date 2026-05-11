@@ -36,6 +36,7 @@ class DioHelper {
     final tokenValue = token?.trim() ?? '';
     final hasToken = tokenValue.isNotEmpty;
 
+
     dio!.options.headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
@@ -80,8 +81,12 @@ class DioHelper {
     await headers(withAuth: withAuth);
     final token = getIt<AuthStorage>().token;
     final userId = getIt<AuthStorage>().userId;
+
     final tokenValue = token?.trim() ?? '';
     final hasToken = tokenValue.isNotEmpty;
+
+
+
     final userIdValue = userId?.trim();
     final hasUserId = userIdValue != null && userIdValue.isNotEmpty;
 
@@ -162,7 +167,7 @@ class DioHelper {
     return dio!.delete(url, data: data, queryParameters: query);
   }
 
- static  Future<Response> patchData({
+  static Future<Response> patchData({
     required String url,
     dynamic data,
     Map<String, dynamic>? query,
@@ -172,7 +177,7 @@ class DioHelper {
     return dio!.patch(url, data: data, queryParameters: query);
   }
 
-static  Future<Response> postMultipartData({
+  static Future<Response> postMultipartData({
     required String url,
     required FormData formData,
     bool withAuth = false,

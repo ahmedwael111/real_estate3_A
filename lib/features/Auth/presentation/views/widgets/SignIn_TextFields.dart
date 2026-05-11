@@ -21,6 +21,7 @@ class SignIn_textFields extends StatelessWidget {
     return Column(
       children: [
         CustomTextformfeild(
+          
           keyboardType: TextInputType.emailAddress,
           controller: emailController,
           hintText: "Enter your email",
@@ -41,10 +42,12 @@ class SignIn_textFields extends StatelessWidget {
         SizedBox(height: 16.h),
 
         CustomTextformfeild(
+          
           keyboardType: TextInputType.visiblePassword,
           controller: passwordController,
           hintText: "Enter your password",
           labelText: "password",
+          
           isPassword: true,
           validator: (value) {
             if (value == null || value.isEmpty) {
