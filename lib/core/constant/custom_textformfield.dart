@@ -117,81 +117,98 @@ class _CustomTextformfeildState extends State<CustomTextformfeild> {
   }
 
   Widget _buildTextField(bool isRTL) {
-    return TextFormField(
-      key: widget.formFieldKey,
-      validator: widget.validator,
-      controller: widget.controller,
-      onChanged: widget.onChanged,
-      autofocus: false,
-      obscureText: widget.isPassword ? _obscureText : false,
-      textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
-      textAlign: isRTL ? TextAlign.right : TextAlign.left,
-      onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
-      style: getLightStyle(
-        fontSize: AppFonts.inputText,
-        color: AppColors.textPrimaryColor,
-      ),
-      keyboardType: widget.keyboardType,
-      decoration: InputDecoration(
-        errorText: widget.errorText,
-        hintText: widget.hintText,
-        hintStyle: getSmallStyle(
-          fontSize: AppFonts.bodyMedium,
-          color: AppColors.textLightColor,
+    return SizedBox(
+      height: 42,
+      child: TextFormField(
+        // selectionHeightStyle: ,
+        cursorColor: AppColors.blue,
+        key: widget.formFieldKey,
+        validator: widget.validator,
+        controller: widget.controller,
+        onChanged: widget.onChanged,
+        autofocus: false,
+        obscureText: widget.isPassword ? _obscureText : false,
+        textDirection: isRTL ? TextDirection.rtl : TextDirection.ltr,
+        textAlign: isRTL ? TextAlign.right : TextAlign.left,
+        onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+        style: getLightStyle(
+          fontSize: AppFonts.inputText,
+          color: AppColors.textPrimaryColor,
         ),
-        filled: true,
-        fillColor: AppColors.lightGrayColor,
-        contentPadding: EdgeInsetsDirectional.symmetric(
-          horizontal: 12.w,
-          vertical: 14.h,
-        ),
-        errorStyle: getSmallStyle(
-          fontSize: AppFonts.labelSmall,
-          color: AppColors.errorColor,
-          height: 1,
-        ),
-        helperText: null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
-          borderSide: BorderSide(color: AppColors.bordergrey, width: 1),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
-          borderSide: BorderSide(color: AppColors.bordergrey, width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
-          borderSide: const BorderSide(
-            color: AppColors.bordergrey,
-            width: 1.5,
+        keyboardType: widget.keyboardType,
+        decoration: InputDecoration(
+          errorText: widget.errorText,
+          hintText: widget.hintText,
+          hintStyle: getSmallStyle(
+            fontSize: AppFonts.bodyMedium,
+            color: AppColors.textLightColor,
           ),
+          filled: true,
+          fillColor: AppColors.lightGrayColor,
+          contentPadding: EdgeInsetsDirectional.symmetric(
+            horizontal: 12.w,
+            vertical: 14.h,
+          ),
+          errorStyle: getSmallStyle(
+            fontSize: AppFonts.labelSmall,
+            color: AppColors.errorColor,
+            height: 1,
+          ),
+          helperText: null,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 217, 215, 215),
+              width: 1,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
+            borderSide: BorderSide(
+              color: Color.fromARGB(255, 217, 215, 215),
+              width: 1,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 217, 215, 215),
+              width: 1.5,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
+            borderSide: const BorderSide(
+              color: AppColors.errorColor,
+              width: 1.5,
+            ),
+          ),
+          prefixIcon: widget.prefixIcon,
+          suffixIconConstraints: BoxConstraints(
+            minWidth: 10.w,
+            minHeight: 10.h,
+          ),
+          suffixIcon: widget.isPassword
+              ? IconButton(
+                  icon: Icon(
+                    _obscureText ? Icons.visibility_off : Icons.visibility,
+                    color: AppColors.textSecondaryColor,
+                    size: 24.sp,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscureText = !_obscureText;
+                    });
+                  },
+                )
+              : widget.suffixIcon != null
+              ? SizedBox(
+                  width: 10.w,
+                  height: 10.h,
+                  child: Center(child: widget.suffixIcon!),
+                )
+              : null,
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(widget.borderRadius ?? 10.r),
-          borderSide: const BorderSide(color: AppColors.errorColor, width: 1.5),
-        ),
-        prefixIcon: widget.prefixIcon,
-        suffixIconConstraints: BoxConstraints(minWidth: 10.w, minHeight: 10.h),
-        suffixIcon: widget.isPassword
-            ? IconButton(
-                icon: Icon(
-                  _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: AppColors.textSecondaryColor,
-                  size: 24.sp,
-                ),
-                onPressed: () {
-                  setState(() {
-                    _obscureText = !_obscureText;
-                  });
-                },
-              )
-            : widget.suffixIcon != null
-            ? SizedBox(
-                width: 10.w,
-                height: 10.h,
-                child: Center(child: widget.suffixIcon!),
-              )
-            : null,
       ),
     );
   }

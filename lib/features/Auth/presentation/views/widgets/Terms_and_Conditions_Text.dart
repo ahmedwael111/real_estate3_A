@@ -24,6 +24,7 @@ class Terms_and_Conditions_Text extends StatelessWidget {
               style: getRegularStyle(
                 fontSize: 11,
                 color: AppColors.splashColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
@@ -40,6 +41,7 @@ class Terms_and_Conditions_Text extends StatelessWidget {
               style: getRegularStyle(
                 fontSize: 12,
                 color: AppColors.splashColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

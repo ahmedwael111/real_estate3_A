@@ -11,13 +11,13 @@ class AppColors {
   static const Color splashColor = Color(0xFF1597A8);
   static const Color lightprimarycolor = Color(0xFFBFF8FF);
   // added from kero
-  static const Color teal = Color(0xFF1B99A3);
+  static const Color teal = Color(0xFF1597A8);
   // added from kero
   static const Color darkGreenText = Color(0xFF336E39);
   // added from kero
   static const Color lightGreenBg = Color(0xFFF2FBEF);
 
-  static const Color darkprimarycolor=  Color(0xFF0D2B30);
+  static const Color darkprimarycolor = Color(0xFF0D2B30);
   static const Color darkColor = Color(0xFF313131);
   static const Color lightGrayColor = Color(0xFFFAFAFA);
   static const Color white = Color(0xFFFFFFFF);

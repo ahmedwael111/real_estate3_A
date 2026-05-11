@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/property_details_view.dart';
 
 import '../../../../Home/presentation/views/widgets/propertyCard.dart';
 import '../../../domain/entities/favoriteEntity.dart';
@@ -95,10 +96,11 @@ class FavoriteCategoryDetail extends StatelessWidget {
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     itemCount: updatedFavorites.length,
-                    separatorBuilder: (_, __) => SizedBox(height: 14.h),
+                    separatorBuilder: (_, _) => SizedBox(height: 14.h),
                     itemBuilder: (_, index) {
                       final fav = updatedFavorites[index];
-                      final isLoading = state is FavoriteActionLoading &&
+                      final isLoading =
+                          state is FavoriteActionLoading &&
                           state.loadingPropertyId == fav.property.id;
 
                       return Stack(
@@ -106,7 +108,16 @@ class FavoriteCategoryDetail extends StatelessWidget {
                           PropertyCard(
                             property: fav.property,
                             isWide: true,
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => PropertyDetailsView(
+                                    propertyId: fav.property.id,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           if (isLoading)
                             Positioned.fill(

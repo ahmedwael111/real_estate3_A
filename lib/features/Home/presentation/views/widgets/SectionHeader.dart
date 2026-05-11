@@ -5,11 +5,7 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onViewAll;
 
-  const SectionHeader({
-    super.key,
-    required this.title,
-    this.onViewAll,
-  });
+  const SectionHeader({super.key, required this.title, this.onViewAll});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +30,7 @@ class SectionHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13.sp,
                   fontWeight: FontWeight.w500,
-                  color: const Color(0xFF2EC4B6),
+                  color: Color(0xFF1597A8),
                 ),
               ),
             ),

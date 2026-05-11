@@ -48,12 +48,14 @@ class _SigninviewbodyState extends State<Signinviewbody> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 50.h),
+              SizedBox(height: 100.h),
               Image.asset(Assets.assetsPlashPng),
+              SizedBox(height: 24.h),
               Text(
                 "Sign In Account",
                 style: getMediumStyle(fontSize: 20, color: Colors.black),
               ),
+              SizedBox(height: 20.h),
               SignIn_textFields(
                 emailController: emailController,
                 passwordController: passwordController,
@@ -62,6 +64,8 @@ class _SigninviewbodyState extends State<Signinviewbody> {
               SizedBox(height: 24.h),
               CustomButton(
                 data: "Login",
+                height: 45.h,
+                fontSize: 14,
                 color: AppColors.splashColor,
                 onTap: () {
                   if (formKey.currentState!.validate()) {

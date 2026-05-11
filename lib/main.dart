@@ -36,7 +36,7 @@ class RealStateApp3A extends StatelessWidget {
               scaffoldBackgroundColor: Color(0xffFAF9F6),
               primarySwatch: Colors.blue,
             ),
-            home: const MainView(),
+            home: const SplashView(),
           ),
         );
       },

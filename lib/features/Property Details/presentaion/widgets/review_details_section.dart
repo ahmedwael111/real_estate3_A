@@ -54,7 +54,7 @@ class ReviewDetailsSection extends StatelessWidget {
                             ),
                             Text(
                               "See all",
-                              style: TextStyle(color: Colors.teal),
+                              style: TextStyle(color: Color(0xFF1597A8)),
                             ),
                           ],
                         ),

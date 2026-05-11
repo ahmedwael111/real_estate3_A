@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../../../core/funcations/app_functions.dart';
@@ -7,10 +6,8 @@ import '../../../../../core/utils/app_styles.dart';
 import '../SignIn_view.dart';
 
 class AuthSwitchText extends StatelessWidget {
-  const AuthSwitchText({
-    super.key,required this.question,required this.goTo
-  });
-final String question,goTo;
+  const AuthSwitchText({super.key, required this.question, required this.goTo});
+  final String question, goTo;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -20,10 +17,16 @@ final String question,goTo;
           question,
           style: getRegularStyle(fontSize: 12, color: Colors.black),
         ),
+        const SizedBox(width: 5),
         Text(
           goTo,
-          style: getRegularStyle(fontSize: 12, color:AppColors.splashColor),
+          style: getRegularStyle(
+            fontSize: 12,
+            color: AppColors.splashColor,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ],);
+      ],
+    );
   }
 }

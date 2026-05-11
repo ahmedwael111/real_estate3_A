@@ -44,9 +44,7 @@ class FavoriteCategoryGridCard extends StatelessWidget {
             // ── 2x2 Grid of images ──────────────────────────────────
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(16.r),
-                ),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16.r)),
                 child: _buildImageGrid(images),
               ),
             ),
@@ -146,20 +144,21 @@ class FavoriteCategoryGridCard extends StatelessWidget {
 
   Widget _netImage(String? url) {
     if (url == null) {
-      return Container(
-        color: const Color(0xFFF3F4F6),
-        child: const Icon(
-          Icons.home_outlined,
-          color: Color(0xFF9CA3AF),
+      return Center(
+        child: Container(
+          color: const Color(0xFFF3F4F6),
+          child: const Icon(Icons.home_outlined, color: Color(0xFF9CA3AF)),
         ),
       );
     }
     return Image.network(
       url,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => Container(
+      errorBuilder: (_, _, _) => Container(
         color: const Color(0xFFF3F4F6),
-        child: const Icon(Icons.home_outlined, color: Color(0xFF9CA3AF)),
+        child: Center(
+          child: const Icon(Icons.home_outlined, color: Color(0xFF9CA3AF)),
+        ),
       ),
     );
   }
