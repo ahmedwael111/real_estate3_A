@@ -18,8 +18,11 @@ import 'ProfileMenuItem.dart';
 import 'ToggleMenuItem.dart';
 import 'Language_menu.dart';
 
-const Color _primary = Color(0xFF1597A8);
-const Color _dark = Color(0xFF0D2B30);
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary     = Color(0xFF1597A8); // teal
+const Color _lightPrimary= Color(0xFFBFF8FF); // light teal
+const Color _darkTeal    = Color(0xFF0D7A8A); // dark teal (replaces 0xFF8B6508)
+const Color _dark        = Color(0xFF0D2B30);
 
 class ProfileViewBody1 extends StatefulWidget {
   const ProfileViewBody1({
@@ -112,14 +115,14 @@ class _ProfileViewBody1State extends State<ProfileViewBody1> {
               ),
 
               SizedBox(height: 20.h),
-              _SectionLabel(label: 'payment method'),
+              _SectionLabel(label: 'Payment Method'),
               SizedBox(height: 10.h),
               _MenuCard(
                 children: [
                   ProfileMenuItem(
-                    icon: Icons.lock_outline_rounded,
+                    icon: Icons.credit_card_outlined,
                     title: 'Payment Method',
-                    subtitle: 'select your payment menthod',
+                    subtitle: 'Select your payment method',
                     onTap: () {},
                   ),
                 ],
@@ -270,7 +273,7 @@ class _SectionLabel extends StatelessWidget {
       style: TextStyle(
         fontSize: 12.sp,
         fontWeight: FontWeight.w700,
-        color: const Color(0xffB8860B),
+        color: _primary, // was Color(0xffB8860B)
         letterSpacing: 1.0,
       ),
     ),
@@ -290,7 +293,7 @@ class _MenuCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18.r),
         boxShadow: [
           BoxShadow(
-            color: _primary.withOpacity(0.07),
+            color: _primary.withOpacity(0.07), // was gold opacity
             blurRadius: 20,
             offset: const Offset(0, 6),
           ),

@@ -6,6 +6,8 @@ import '../../../../../core/constant/custom_textformfield.dart';
 import '../../cubit/profile_cubit.dart';
 import '../../cubit/profile_state.dart';
 
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary = Color(0xFF1597A8); // teal (replaces 0xffB8860B)
 
 class ChangePasswordView extends StatefulWidget {
   const ChangePasswordView({super.key});
@@ -72,8 +74,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
+                    borderRadius: BorderRadius.circular(8.r)),
               ),
             );
             Navigator.pop(context);
@@ -85,8 +86,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
+                    borderRadius: BorderRadius.circular(8.r)),
               ),
             );
           }
@@ -100,19 +100,19 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ── Illustration ─────────────────────────────────────
+                  // ── Illustration ──────────────────────────────────────
                   Center(
                     child: Container(
                       width: 90.w,
                       height: 90.h,
                       decoration: BoxDecoration(
-                        color: const Color(0xffB8860B).withOpacity(0.1),
+                        color: _primary.withOpacity(0.1), // was Color(0xffB8860B).withOpacity(0.1)
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.lock_outline_rounded,
                         size: 44.sp,
-                        color: const Color(0xffB8860B),
+                        color: _primary, // was Color(0xffB8860B)
                       ),
                     ),
                   ),
@@ -120,23 +120,20 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                   Center(
                     child: Text(
                       'Keep your account secure',
-                      style: TextStyle(
-                        fontSize: 13.sp,
-                        color: Colors.grey[500],
-                      ),
+                      style: TextStyle(fontSize: 13.sp, color: Colors.grey[500]),
                     ),
                   ),
 
                   SizedBox(height: 32.h),
 
-                  // ── Fields ───────────────────────────────────────────
+                  // ── Fields ────────────────────────────────────────────
                   CustomTextformfeild(
                     keyboardType: TextInputType.visiblePassword,
                     formFieldKey: UniqueKey(),
                     controller: _currentPasswordController,
                     labelText: 'Current Password',
                     hintText: 'Enter current password',
-                    prefixIcon:Icon(Icons.lock_outline_rounded) ,
+                    prefixIcon: const Icon(Icons.lock_outline_rounded),
                     isPassword: _obscureCurrent,
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -160,7 +157,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                     controller: _newPasswordController,
                     labelText: 'New Password',
                     hintText: 'Min. 8 characters',
-                    prefixIcon:Icon(Icons.lock_reset_rounded) ,
+                    prefixIcon: const Icon(Icons.lock_reset_rounded),
                     isPassword: _obscureNew,
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -174,23 +171,19 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                           setState(() => _obscureNew = !_obscureNew),
                     ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'New password is required';
-                      }
-                      if (v.length < 8) {
-                        return 'Password must be at least 8 characters';
-                      }
+                      if (v == null || v.isEmpty) return 'New password is required';
+                      if (v.length < 8) return 'Password must be at least 8 characters';
                       return null;
                     },
                   ),
                   SizedBox(height: 16.h),
                   CustomTextformfeild(
-                    keyboardType:TextInputType.visiblePassword ,
+                    keyboardType: TextInputType.visiblePassword,
                     formFieldKey: UniqueKey(),
                     controller: _confirmPasswordController,
                     labelText: 'Confirm New Password',
                     hintText: 'Re-enter new password',
-                    prefixIcon:Icon(Icons.check_circle_outline_rounded) ,
+                    prefixIcon: const Icon(Icons.check_circle_outline_rounded),
                     isPassword: _obscureConfirm,
                     suffixIcon: IconButton(
                       icon: Icon(
@@ -204,31 +197,25 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                           setState(() => _obscureConfirm = !_obscureConfirm),
                     ),
                     validator: (v) {
-                      if (v == null || v.isEmpty) {
-                        return 'Please confirm your new password';
-                      }
-                      if (v != _newPasswordController.text) {
-                        return 'Passwords do not match';
-                      }
+                      if (v == null || v.isEmpty) return 'Please confirm your new password';
+                      if (v != _newPasswordController.text) return 'Passwords do not match';
                       return null;
                     },
                   ),
 
                   SizedBox(height: 32.h),
 
-                  // ── Submit ───────────────────────────────────────────
+                  // ── Submit ────────────────────────────────────────────
                   SizedBox(
                     width: double.infinity,
                     height: 52.h,
                     child: ElevatedButton(
                       onPressed: isLoading ? null : _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffB8860B),
-                        disabledBackgroundColor:
-                        const Color(0xffB8860B).withOpacity(0.6),
+                        backgroundColor: _primary, // was Color(0xffB8860B)
+                        disabledBackgroundColor: _primary.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
+                            borderRadius: BorderRadius.circular(14.r)),
                         elevation: 0,
                       ),
                       child: isLoading
@@ -236,9 +223,7 @@ class _ChangePasswordViewState extends State<ChangePasswordView> {
                         width: 22.w,
                         height: 22.h,
                         child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
+                            color: Colors.white, strokeWidth: 2),
                       )
                           : Text(
                         'Update Password',

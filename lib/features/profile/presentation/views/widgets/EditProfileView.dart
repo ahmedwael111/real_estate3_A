@@ -1,3 +1,6 @@
+// ══════════════════════════════════════════════════════════
+//  EditProfileView.dart  –  teal theme
+// ══════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +9,9 @@ import 'package:real_estate3_a/core/constant/custom_textformfield.dart';
 import '../../../domain/entity/profileEntity.dart';
 import '../../cubit/profile_cubit.dart';
 import '../../cubit/profile_state.dart';
+
+// ── Theme colors ──────────────────────────────────────────
+const Color _primary = Color(0xFF1597A8); // teal (replaces 0xffB8860B)
 
 class EditProfileView extends StatefulWidget {
   final ProfileEntity profile;
@@ -55,11 +61,8 @@ class _EditProfileViewState extends State<EditProfileView> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios_new_rounded,
-            size: 20.sp,
-            color: const Color(0xff1A1A2E),
-          ),
+          icon: Icon(Icons.arrow_back_ios_new_rounded,
+              size: 20.sp, color: const Color(0xff1A1A2E)),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -81,8 +84,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 backgroundColor: Colors.green,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
+                    borderRadius: BorderRadius.circular(8.r)),
               ),
             );
             Navigator.pop(context);
@@ -94,8 +96,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                 backgroundColor: Colors.red,
                 behavior: SnackBarBehavior.floating,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
+                    borderRadius: BorderRadius.circular(8.r)),
               ),
             );
           }
@@ -108,13 +109,13 @@ class _EditProfileViewState extends State<EditProfileView> {
               key: _formKey,
               child: Column(
                 children: [
-                  // ── Avatar ───────────────────────────────────────────
+                  // ── Avatar ────────────────────────────────────────────
                   Center(
                     child: Stack(
                       children: [
                         CircleAvatar(
                           radius: 50.r,
-                          backgroundColor: const Color(0xffB8860B),
+                          backgroundColor: _primary, // was Color(0xffB8860B)
                           child: Text(
                             widget.profile.name.isNotEmpty
                                 ? widget.profile.name[0].toUpperCase()
@@ -132,14 +133,11 @@ class _EditProfileViewState extends State<EditProfileView> {
                           child: Container(
                             padding: EdgeInsets.all(6.r),
                             decoration: const BoxDecoration(
-                              color: Color(0xffB8860B),
+                              color: _primary, // was Color(0xffB8860B)
                               shape: BoxShape.circle,
                             ),
-                            child: Icon(
-                              Icons.camera_alt_rounded,
-                              size: 14.sp,
-                              color: Colors.white,
-                            ),
+                            child: Icon(Icons.camera_alt_rounded,
+                                size: 14.sp, color: Colors.white),
                           ),
                         ),
                       ],
@@ -153,12 +151,12 @@ class _EditProfileViewState extends State<EditProfileView> {
 
                   SizedBox(height: 32.h),
 
-                  // ── Fields ───────────────────────────────────────────
+                  // ── Fields ────────────────────────────────────────────
                   CustomTextformfeild(
                     controller: _nameController,
                     labelText: 'Full Name',
                     hintText: 'Enter your full name',
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: const Icon(Icons.person),
                     validator: (v) => (v == null || v.trim().isEmpty)
                         ? 'Name is required'
                         : null,
@@ -170,7 +168,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: _locationController,
                     labelText: 'Location',
                     hintText: 'e.g. Cairo, Egypt',
-                    prefixIcon: Icon(Icons.location_on),
+                    prefixIcon: const Icon(Icons.location_on),
                     keyboardType: TextInputType.text,
                     validator: (p0) {},
                     formFieldKey: null,
@@ -180,7 +178,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                     controller: _phoneController,
                     labelText: 'Phone',
                     hintText: '+20 1XX XXX XXXX',
-                    prefixIcon:Icon(Icons.phone_outlined) ,
+                    prefixIcon: const Icon(Icons.phone_outlined),
                     keyboardType: TextInputType.phone,
                     validator: (p0) {},
                     formFieldKey: null,
@@ -188,39 +186,35 @@ class _EditProfileViewState extends State<EditProfileView> {
 
                   SizedBox(height: 32.h),
 
-                  // ── Save Button ──────────────────────────────────────
+                  // ── Save Button ───────────────────────────────────────
                   SizedBox(
                     width: double.infinity,
                     height: 52.h,
                     child: ElevatedButton(
                       onPressed: isLoading ? null : _submit,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xffB8860B),
-                        disabledBackgroundColor: const Color(
-                          0xffB8860B,
-                        ).withOpacity(0.6),
+                        backgroundColor: _primary, // was Color(0xffB8860B)
+                        disabledBackgroundColor:
+                        _primary.withOpacity(0.6),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14.r),
-                        ),
+                            borderRadius: BorderRadius.circular(14.r)),
                         elevation: 0,
                       ),
                       child: isLoading
                           ? SizedBox(
-                              width: 22.w,
-                              height: 22.h,
-                              child: const CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
-                            )
+                        width: 22.w,
+                        height: 22.h,
+                        child: const CircularProgressIndicator(
+                            color: Colors.white, strokeWidth: 2),
+                      )
                           : Text(
-                              'Save Changes',
-                              style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
+                        'Save Changes',
+                        style: TextStyle(
+                          fontSize: 15.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
                 ],

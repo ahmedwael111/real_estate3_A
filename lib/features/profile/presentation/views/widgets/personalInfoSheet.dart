@@ -1,9 +1,13 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/core/utils/app_colors.dart';
 
 import '../../../domain/entity/profileEntity.dart';
+
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary      = Color(0xFF1597A8); // teal
+const Color _lightPrimary = Color(0xFFBFF8FF); // light teal
+const Color _darkTeal     = Color(0xFF0D7A8A); // dark teal (replaces 0xFF8B6508)
 
 class PersonalInfoSheet extends StatelessWidget {
   const PersonalInfoSheet({required this.profile});
@@ -18,10 +22,10 @@ class PersonalInfoSheet extends StatelessWidget {
               width: 38.w,
               height: 38.h,
               decoration: BoxDecoration(
-                color:  const Color(0xFFFFF3D6),
+                color: _lightPrimary, // was Color(0xFFFFF3D6)
                 borderRadius: BorderRadius.circular(10.r),
               ),
-              child: Icon(icon, color: const Color(0xFF8B6508), size: 18.sp),
+              child: Icon(icon, color: _darkTeal, size: 18.sp), // was Color(0xFF8B6508)
             ),
             SizedBox(width: 14.w),
             Column(

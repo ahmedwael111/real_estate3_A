@@ -1,7 +1,15 @@
+// ══════════════════════════════════════════════════════════
+//  ProfileInfoCard.dart  –  teal theme
+// ══════════════════════════════════════════════════════════
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../domain/entity/profileEntity.dart';
+
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary      = Color(0xFF1597A8); // teal
+const Color _lightPrimary = Color(0xFFBFF8FF); // light teal
+const Color _darkTeal     = Color(0xFF0D5F6E); // dark teal (gradient start)
 
 class ProfileInfoCard extends StatelessWidget {
   final ProfileEntity profile;
@@ -15,14 +23,17 @@ class ProfileInfoCard extends StatelessWidget {
       padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xffB8860B), Color(0xffDAA520)],
+          colors: [
+            Color(0xFF0D5F6E), // dark teal  (was 0xffB8860B)
+            Color(0xFF1597A8), // teal        (was 0xFFDAA520)
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xffB8860B).withOpacity(0.3),
+            color: _primary.withOpacity(0.3), // was Color(0xffB8860B).withOpacity(0.3)
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -30,14 +41,12 @@ class ProfileInfoCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // ── Avatar ──────────────────────────────────────────────────
+          // ── Avatar ────────────────────────────────────────────────
           CircleAvatar(
             radius: 32.r,
             backgroundColor: Colors.white.withOpacity(0.2),
             child: Text(
-              profile.name.isNotEmpty
-                  ? profile.name[0].toUpperCase()
-                  : '?',
+              profile.name.isNotEmpty ? profile.name[0].toUpperCase() : '?',
               style: TextStyle(
                 fontSize: 28.sp,
                 color: Colors.white,
@@ -47,7 +56,7 @@ class ProfileInfoCard extends StatelessWidget {
           ),
           SizedBox(width: 16.w),
 
-          // ── Info ─────────────────────────────────────────────────────
+          // ── Info ──────────────────────────────────────────────────
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,3 +107,9 @@ class ProfileInfoCard extends StatelessWidget {
     );
   }
 }
+
+
+// ══════════════════════════════════════════════════════════
+//  ProfileNameRow.dart  –  teal theme
+// ══════════════════════════════════════════════════════════
+

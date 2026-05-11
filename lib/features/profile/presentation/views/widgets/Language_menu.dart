@@ -1,11 +1,15 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/core/utils/app_colors.dart';
+
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary      = Color(0xFF1597A8); // teal
+const Color _lightPrimary = Color(0xFFBFF8FF); // light teal
+const Color _darkTeal     = Color(0xFF0D7A8A); // dark teal (replaces 0xFF8B6508)
+
 const List<Map<String, String>> _kLanguages = [
   {'code': 'en', 'label': 'English', 'flag': '🇺🇸'},
   {'code': 'ar', 'label': 'العربية', 'flag': '🇪🇬'},
-
 ];
 
 class LanguageMenuItem extends StatelessWidget {
@@ -33,10 +37,11 @@ class LanguageMenuItem extends StatelessWidget {
                 width: 42.w,
                 height: 42.h,
                 decoration: BoxDecoration(
-                  color: const Color(0xffB8860B).withOpacity(0.1),
+                  color: _primary.withOpacity(0.1), // was Color(0xffB8860B).withOpacity(0.1)
                   borderRadius: BorderRadius.circular(13.r),
                 ),
-                child: Icon(Icons.language_rounded, color: const Color(0xffB8860B), size: 20.sp),
+                child: Icon(Icons.language_rounded,
+                    color: _primary, size: 20.sp), // was Color(0xffB8860B)
               ),
               SizedBox(width: 14.w),
               Expanded(
@@ -63,7 +68,7 @@ class LanguageMenuItem extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: _lightPrimary, // was Colors.grey.shade300
                   borderRadius: BorderRadius.circular(20.r),
                 ),
                 child: Row(
@@ -76,7 +81,7 @@ class LanguageMenuItem extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 12.sp,
                         fontWeight: FontWeight.w600,
-                        color:  const Color(0xFF8B6508),
+                        color: _darkTeal, // was Color(0xFF8B6508)
                       ),
                     ),
                   ],

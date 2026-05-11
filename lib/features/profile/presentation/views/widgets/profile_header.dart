@@ -6,6 +6,11 @@ import '../../../domain/entity/profileEntity.dart';
 import 'CoverPrinter.dart';
 import 'edit_chip.dart';
 
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary      = Color(0xFF1597A8); // teal
+const Color _lightPrimary = Color(0xFFBFF8FF); // light teal (replaces FFF3D6 / FFF8E7)
+const Color _darkTeal     = Color(0xFF0D5F6E); // darker teal (for gradient start)
+
 class ProfileHeaderCard extends StatelessWidget {
   const ProfileHeaderCard({
     super.key,
@@ -40,9 +45,9 @@ class ProfileHeaderCard extends StatelessWidget {
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color(0xFF6D4C00),
-                      Color(0xFFB8860B),
-                      Color(0xFFFFD166),
+                      Color(0xFF0D5F6E), // dark teal  (was 0xFF6D4C00)
+                      Color(0xFF1597A8), // teal        (was 0xFFB8860B)
+                      Color(0xFFBFF8FF), // light teal  (was 0xFFFFD166)
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -71,12 +76,12 @@ class ProfileHeaderCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFFFFF8E7),
+                    color: const Color(0xFFE0F8FB), // was Color(0xFFFFF8E7)
                     width: 4,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFB8860B).withOpacity(0.25),
+                      color: _primary.withOpacity(0.25), // was gold opacity
                       blurRadius: 18,
                       offset: const Offset(0, 6),
                     ),
@@ -84,7 +89,7 @@ class ProfileHeaderCard extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   radius: 44.r,
-                  backgroundColor: const Color(0xFFFFF3D6),
+                  backgroundColor: _lightPrimary, // was Color(0xFFFFF3D6)
                   backgroundImage:
                   avatarImage != null ? FileImage(avatarImage!) : null,
                   child: null,
@@ -99,14 +104,14 @@ class ProfileHeaderCard extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(5.r),
                     decoration: BoxDecoration(
-                      color:  const Color(0xFFFFF3D6),
+                      color: _lightPrimary, // was Color(0xFFFFF3D6)
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                     ),
                     child: Icon(
                       Icons.camera_alt_rounded,
                       size: 12.sp,
-                      color:const Color(0xFFB8860B),
+                      color: _primary, // was Color(0xFFB8860B)
                     ),
                   ),
                 ),

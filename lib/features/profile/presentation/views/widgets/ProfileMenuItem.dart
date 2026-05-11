@@ -17,7 +17,7 @@ class ProfileMenuItem extends StatelessWidget {
     required this.title,
     required this.subtitle,
     this.onTap,
-    this.iconColor = const Color(0xffB8860B),
+    this.iconColor =const Color(0xFF1597A8),
     this.titleColor = const Color(0xff1A1A2E),
     this.showArrow = true,
     this.isLoading = false,

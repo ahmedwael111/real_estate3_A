@@ -1,7 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:real_estate3_a/core/utils/app_colors.dart';
+
+// ── Theme colors ──────────────────────────────────────────────────────────────
+const Color _primary = Color(0xFF1597A8); // teal (replaces 0xffB8860B)
 
 class ToggleMenuItem extends StatelessWidget {
   const ToggleMenuItem({
@@ -28,10 +30,10 @@ class ToggleMenuItem extends StatelessWidget {
             width: 42.w,
             height: 42.h,
             decoration: BoxDecoration(
-              color: const Color(0xffB8860B).withOpacity(0.1),
+              color: _primary.withOpacity(0.1), // was Color(0xffB8860B).withOpacity(0.1)
               borderRadius: BorderRadius.circular(13.r),
             ),
-            child: Icon(icon, color: const Color(0xffB8860B), size: 20.sp),
+            child: Icon(icon, color: _primary, size: 20.sp), // was Color(0xffB8860B)
           ),
           SizedBox(width: 14.w),
           Expanded(
@@ -57,8 +59,8 @@ class ToggleMenuItem extends StatelessWidget {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: Color(0xffB8860B).withOpacity(0.5),
-            activeTrackColor: Colors.grey.shade300,
+            activeColor: Colors.white,
+            activeTrackColor: _primary, // was Color(0xffB8860B).withOpacity(0.5)
             inactiveThumbColor: Colors.white,
             inactiveTrackColor: Colors.grey.shade300,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
