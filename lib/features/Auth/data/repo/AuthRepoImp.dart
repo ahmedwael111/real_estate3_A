@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:real_estate3_a/core/api/dio_helper.dart';
 import 'package:real_estate3_a/core/constant/app_constants.dart';
@@ -44,6 +46,7 @@ class AuthRepoImpl extends AuthRepo {
 
       return right(UserEntity.fromModel(userModel));
     } on ServerException catch (e) {
+      log(e.message.toString());
       return left(e.message.toString());
     } catch (e) {
       return left(e.toString());
@@ -64,6 +67,7 @@ class AuthRepoImpl extends AuthRepo {
           'password': password,
         },
       );
+      print(response.data);
 
       final data = response.data["data"];
 
@@ -78,12 +82,24 @@ class AuthRepoImpl extends AuthRepo {
 
       return right(UserEntity.fromModel(userModel));
 
-    } catch (e) {
+    } catch (e, stackTrace) {
+
+      print("ERROR => $e");
+      print("STACK => $stackTrace");
+
       if (e is DioException) {
-        final message = e.response?.data["message"];
-        return left(message ?? "Login failed");
+
+        print(e.response?.data);
+
+        final message =
+        e.response?.data["message"];
+
+        return left(
+          message ?? "Login failed",
+        );
       }
-      return left("Unexpected error");
+
+      return left(e.toString());
     }
   }
 }

@@ -370,7 +370,7 @@ class PropertyCard extends StatelessWidget {
         left: Radius.circular(16.r),
       ),
       child: Image.network(
-        'https://tse4.mm.bing.net/th/id/OIP.azidKobVRfGjX2RGXBu6EAHaEb?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+        'https://kids.britannica.com/students/article/property/276551',
         width: w,
         height: h,
         fit: BoxFit.cover,

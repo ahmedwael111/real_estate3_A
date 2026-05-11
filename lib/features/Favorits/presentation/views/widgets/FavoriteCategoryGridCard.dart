@@ -83,12 +83,12 @@ class FavoriteCategoryGridCard extends StatelessWidget {
   }
 
   Widget _buildImageGrid(List<String?> images) {
-    // لو فيه صورة واحدة بس
+
     if (images.length == 1) {
       return _netImage(images[0]);
     }
 
-    // لو اتنين
+
     if (images.length == 2) {
       return Row(
         children: [
@@ -99,7 +99,7 @@ class FavoriteCategoryGridCard extends StatelessWidget {
       );
     }
 
-    // لو تلاتة
+
     if (images.length == 3) {
       return Row(
         children: [
@@ -165,8 +165,6 @@ class FavoriteCategoryGridCard extends StatelessWidget {
   }
 
   String _lastAdded() {
-    // نرجع "Today" أو "1 week ago" زي الـ Figma
-    // لو عندك createdAt في الـ entity استخدمه، غير كده نرجع count
     return '${items.length} ${items.length == 1 ? 'property' : 'properties'}';
   }
 }

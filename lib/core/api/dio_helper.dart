@@ -29,17 +29,19 @@ class DioHelper {
     }
   }
 
- static Future<void> headers({bool withAuth = false}) async {
+  static Future<void> headers({bool withAuth = false}) async {
     final token = getIt<AuthStorage>().token;
     final lang = AppFunctions.getLanguageCode();
-    final tokenValue = token!.trim();
+
+    final tokenValue = token?.trim() ?? '';
     final hasToken = tokenValue.isNotEmpty;
 
     dio!.options.headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
       'locale': lang,
-      if (withAuth && hasToken) 'Authorization': 'Bearer $token',
+      if (withAuth && hasToken)
+        'Authorization': 'Bearer $tokenValue',
     };
   }
 
@@ -78,7 +80,7 @@ class DioHelper {
     await headers(withAuth: withAuth);
     final token = getIt<AuthStorage>().token;
     final userId = getIt<AuthStorage>().userId;
-    final tokenValue = token!.trim();
+    final tokenValue = token?.trim() ?? '';
     final hasToken = tokenValue.isNotEmpty;
     final userIdValue = userId?.trim();
     final hasUserId = userIdValue != null && userIdValue.isNotEmpty;

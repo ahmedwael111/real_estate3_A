@@ -7,6 +7,7 @@ import 'package:real_estate3_a/core/constant/cached_image_widget.dart';
 
 import 'package:real_estate3_a/core/constant/snakbar.dart';
 import 'package:real_estate3_a/features/Property%20Details/domin/entities/property/property.details.entity.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/widgets/userReviewShimmer.dart';
 
 class UserReviewScreen extends StatelessWidget {
   const UserReviewScreen({
@@ -67,11 +68,7 @@ class UserReviewScreen extends StatelessWidget {
         } else if (state is ReviewsPropertyError) {
           return Scaffold(body: Center(child: Text(state.message)));
         } else {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(color: Color(0xFF1597A8)),
-            ),
-          );
+          return ReviewShimmerScreen();
         }
       },
     );
