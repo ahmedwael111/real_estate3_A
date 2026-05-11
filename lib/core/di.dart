@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:real_estate3_a/features/Auth/data/repo/AuthRepoImp.dart';
-import 'package:real_estate3_a/features/Auth/domain/repo/AuthRepo.dart';
 import 'package:real_estate3_a/features/Favorits/data/dataSource/favoriteRemoteDataSource.dart';
 import 'package:real_estate3_a/features/Favorits/data/repo/favoriteRepoImp.dart';
 import 'package:real_estate3_a/features/Favorits/domain/repo/favoriteRepo.dart';
@@ -11,13 +10,24 @@ import 'package:real_estate3_a/features/profile/domain/repo/profileRepo.dart';
 import '../features/Home/data/RemoteDataSource/HomeRemoteDataSource.dart';
 import '../features/Home/data/repo/HomeRepoImpl.dart';
 import '../features/Home/domain/repo/HomeRepo.dart';
+import 'package:real_estate3_a/features/Property%20Details/data/repos/property_details_repo_impl.dart';
+import 'package:real_estate3_a/features/Property%20Details/domin/repos/propety_details_repo.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
+import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
 import 'save data/save_data.dart';
 import 'security/security_helper.dart';
 import 'api/dio_helper.dart';
 import 'api/internet_connection_checker.dart';
+import '../features/payment/data/datasources/payment_remote_data_source.dart';
+import '../features/payment/data/datasources/payment_remote_data_source_impl.dart';
+import '../core/api/api_consumer.dart';
+import '../features/payment/data/repositories/payment_repository_impl.dart';
+import '../features/payment/domain/repositories/payment_repository.dart';
+import '../features/payment/domain/usecases/create_order_usecase.dart';
+import '../features/payment/presentation/cubit/payment_cubit.dart';
 
-
-final GetIt getIt = GetIt.instance;
+final getIt = GetIt.instance;
 
 Future<void> initAppModule() async {
   final cacheHelper = CacheHelper();
@@ -34,28 +44,27 @@ Future<void> initAppModule() async {
 
   getIt.registerLazySingleton<AuthRepoImpl>(() => AuthRepoImpl());
 
-
   getIt.registerLazySingleton<HomeRepository>(
-        () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()),
+    () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()),
   );
   getIt.registerLazySingleton<HomeRemoteDataSource>(
-        () => const HomeRemoteDataSourceImpl(),
+    () => const HomeRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<FavoriteRemoteDataSource>(
-        () => const FavoriteRemoteDataSourceImpl(),
+    () => const FavoriteRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<FavoriteRepository>(
-        () =>  FavoriteRepositoryImpl(getIt<FavoriteRemoteDataSource>()),
+    () => FavoriteRepositoryImpl(getIt<FavoriteRemoteDataSource>()),
   );
 
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
-        () => ProfileRemoteDataSourceImpl(),
+    () => ProfileRemoteDataSourceImpl(),
   );
   getIt.registerLazySingleton<ProfileRepository>(
-        () => ProfileRepositoryImpl(remoteDataSource: getIt<ProfileRemoteDataSource>()),
+    () => ProfileRepositoryImpl(
+      remoteDataSource: getIt<ProfileRemoteDataSource>(),
+    ),
   );
-
-
 
   await DioHelper.init();
   getIt.registerLazySingleton<DioHelper>(() => DioHelper());
@@ -68,4 +77,39 @@ Future<void> initAppModule() async {
     () => NetworkInfoImpl(getIt<InternetConnectionChecker>()),
   );
 
+  // Property Details
+  getIt.registerLazySingleton<PropertyDetailsRepo>(
+    () => PropertyDetailsRepoImpl(),
+  );
+  getIt.registerLazySingleton<PropertyDetailsCubit>(
+    () =>
+        PropertyDetailsCubit(propertyDetailsRepo: getIt<PropertyDetailsRepo>()),
+  );
+  getIt.registerLazySingleton<SimilarPropertyDetailsCubit>(
+    () => SimilarPropertyDetailsCubit(
+      propertyDetailsRepo: getIt<PropertyDetailsRepo>(),
+    ),
+  );
+  getIt.registerLazySingleton<ReviewsPropertyCubit>(
+    () =>
+        ReviewsPropertyCubit(propertyDetailsRepo: getIt<PropertyDetailsRepo>()),
+  );
+  // Payment feature dependencies
+  getIt.registerLazySingleton<PaymentRemoteDataSource>(
+    () => PaymentRemoteDataSourceImpl(api: ApiConsumer()),
+  );
+
+  getIt.registerLazySingleton<PaymentRepository>(
+    () => PaymentRepositoryImpl(
+      remoteDataSource: getIt<PaymentRemoteDataSource>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CreateOrderUseCase>(
+    () => CreateOrderUseCase(repository: getIt<PaymentRepository>()),
+  );
+
+  getIt.registerFactory<PaymentCubit>(
+    () => PaymentCubit(createOrderUseCase: getIt<CreateOrderUseCase>()),
+  );
 }

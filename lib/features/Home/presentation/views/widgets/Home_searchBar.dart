@@ -28,8 +28,7 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        final hasFilter =
-            state is HomeLoaded && state.hasActiveFilter;
+        final hasFilter = state is HomeLoaded && state.hasActiveFilter;
 
         return Padding(
           padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0),
@@ -54,8 +53,11 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.search,
-                          size: 20.sp, color: const Color(0xFF9CA3AF)),
+                      Icon(
+                        Icons.search,
+                        size: 20.sp,
+                        color: const Color(0xFF9CA3AF),
+                      ),
                       SizedBox(width: 10.w),
                       Expanded(
                         child: TextField(
@@ -73,16 +75,18 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
                             // X لو في نص
                             suffixIcon: _controller.text.isNotEmpty
                                 ? GestureDetector(
-                              onTap: () {
-                                _controller.clear();
-                                context
-                                    .read<HomeCubit>()
-                                    .onSearchChanged('');
-                              },
-                              child: Icon(Icons.close,
-                                  size: 16.r,
-                                  color: const Color(0xFF9CA3AF)),
-                            )
+                                    onTap: () {
+                                      _controller.clear();
+                                      context.read<HomeCubit>().onSearchChanged(
+                                        '',
+                                      );
+                                    },
+                                    child: Icon(
+                                      Icons.close,
+                                      size: 16.r,
+                                      color: const Color(0xFF9CA3AF),
+                                    ),
+                                  )
                                 : null,
                           ),
                           style: TextStyle(
@@ -109,7 +113,6 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
                       height: 52.r,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-
                         color: hasFilter
                             ? const Color(0xFF2EC4B6)
                             : Colors.white,
@@ -127,7 +130,9 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
                         // لو active يخلي الأيقونة بيضاء
                         colorFilter: hasFilter
                             ? const ColorFilter.mode(
-                            Colors.white, BlendMode.srcIn)
+                                Colors.white,
+                                BlendMode.srcIn,
+                              )
                             : null,
                       ),
                     ),
@@ -155,10 +160,8 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
     );
   }
 
-
   void _showFilterSheet(BuildContext context) {
     final cubit = context.read<HomeCubit>();
-
 
     String? selectedType = cubit.selectedListingType;
     final minCtrl = TextEditingController(
@@ -181,8 +184,7 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
               ),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius:
-                BorderRadius.vertical(top: Radius.circular(24.r)),
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
               ),
               child: Padding(
                 padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 30.h),
@@ -238,7 +240,6 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
 
                     SizedBox(height: 20.h),
 
-
                     Text(
                       'Listing Type',
                       style: TextStyle(
@@ -253,8 +254,7 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
                         TypeChip(
                           label: 'All',
                           selected: selectedType == null,
-                          onTap: () =>
-                              setSheetState(() => selectedType = null),
+                          onTap: () => setSheetState(() => selectedType = null),
                         ),
                         SizedBox(width: 10.w),
                         TypeChip(
@@ -274,7 +274,6 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
                     ),
 
                     SizedBox(height: 20.h),
-
 
                     Text(
                       'Price Range (EGP)',
@@ -347,7 +346,3 @@ class _HomeSearchbarState extends State<HomeSearchbar> {
     );
   }
 }
-
-
-
-

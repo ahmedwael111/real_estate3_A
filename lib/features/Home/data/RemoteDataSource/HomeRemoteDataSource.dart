@@ -9,7 +9,6 @@ abstract class HomeRemoteDataSource {
 }
 
 class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
-
   const HomeRemoteDataSourceImpl();
 
   @override
@@ -20,10 +19,7 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
         withAuth: false,
       );
       print(response.data);
-      return HomeDataModel.fromJson(
-        response.data as Map<String, dynamic>,
-      );
-
+      return HomeDataModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw _handleDioError(e);
     } catch (e) {

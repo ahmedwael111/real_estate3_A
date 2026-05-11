@@ -80,12 +80,7 @@ class CachedImageWidget extends StatelessWidget {
         color: Colors.grey[300],
         borderRadius: borderRadius,
       ),
-      child: Center(
-        child: CustomLogo(
-          width: (width ?? 100) * 0.8,
-          height: (height ?? 100) * 0.8,
-        ),
-      ),
+      child: CustomPlaceholderImage(fit: BoxFit.cover),
     );
   }
 }

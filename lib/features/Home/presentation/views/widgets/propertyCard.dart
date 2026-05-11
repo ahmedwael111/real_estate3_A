@@ -58,9 +58,9 @@ class PropertyCard extends StatelessWidget {
                           height: height * 0.18,
                           width: double.infinity,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => _imagePlaceholder(),
+                          errorBuilder: (_, _, _) => _imagePlaceholder(double.infinity, height * 0.18),
                         )
-                      : _imagePlaceholder(),
+                      : _imagePlaceholder(double.infinity, height * 0.18),
                 ),
                 Positioned(
                   top: 10.h,
@@ -90,7 +90,7 @@ class PropertyCard extends StatelessWidget {
                         ),
                       ),
                       SizedBox(width: 6.w),
-                    FavButton(propertyId: property.id),
+                      FavButton(propertyId: property.id),
                     ],
                   ),
                   SizedBox(height: 4.h),
@@ -102,7 +102,6 @@ class PropertyCard extends StatelessWidget {
                         height: 13.h,
                       ),
                       SizedBox(width: 4.w),
-
 
                       Expanded(
                         child: Text(
@@ -217,7 +216,7 @@ class PropertyCard extends StatelessWidget {
                           height: 170.h,
                           width: 170.w,
                           fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
+                          errorBuilder: (_, _, _) =>
                               _imagePlaceholderSquare(170.w, 170.h),
                         )
                       : _imagePlaceholderSquare(170.w, 170.h),
@@ -251,7 +250,7 @@ class PropertyCard extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 6.w),
-                       FavButton(propertyId: property.id),
+                        FavButton(propertyId: property.id),
                       ],
                     ),
                     SizedBox(height: 12.h),
@@ -314,7 +313,7 @@ class PropertyCard extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w700,
-                            color:Colors.black,
+                            color: Colors.black,
                           ),
                         ),
                         Row(
@@ -353,28 +352,28 @@ class PropertyCard extends StatelessWidget {
     return title;
   }
 
-  Widget _imagePlaceholder() {
-    return Container(
-      height: 130.h,
-      width: double.infinity,
-      color: const Color(0xFFF3F4F6),
-      child: Icon(
-        Icons.home_outlined,
-        size: 40.r,
-        color: const Color(0xFF9CA3AF),
+  Widget _imagePlaceholder(double w, double h) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20.r),
+      child: Image.network(
+        'https://tse4.mm.bing.net/th/id/OIP.azidKobVRfGjX2RGXBu6EAHaEb?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+        fit: BoxFit.cover,
+        width:w,
+        height: h,
       ),
     );
   }
 
   Widget _imagePlaceholderSquare(double w, double h) {
-    return Container(
-      height: h,
-      width: w,
-      color: const Color(0xFFF3F4F6),
-      child: Icon(
-        Icons.home_outlined,
-        size: 30.r,
-        color: const Color(0xFF9CA3AF),
+    return ClipRRect(
+      borderRadius: BorderRadius.horizontal(
+        left: Radius.circular(16.r),
+      ),
+      child: Image.network(
+        'https://tse4.mm.bing.net/th/id/OIP.azidKobVRfGjX2RGXBu6EAHaEb?r=0&rs=1&pid=ImgDetMain&o=7&rm=3',
+        width: w,
+        height: h,
+        fit: BoxFit.cover,
       ),
     );
   }

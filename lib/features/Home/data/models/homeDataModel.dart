@@ -1,4 +1,3 @@
-
 import 'package:real_estate3_a/features/Home/data/models/propertyCardModel.dart';
 
 import '../../domain/entities/home_dateEntity.dart';
@@ -16,7 +15,6 @@ class HomeDataModel {
     required this.featured,
     required this.recommended,
   });
-
 
   factory HomeDataModel.fromJson(Map<String, dynamic> json) {
     final data = json['data'] as Map<String, dynamic>;

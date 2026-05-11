@@ -44,10 +44,10 @@ class CustomButton extends StatelessWidget {
         width: width,
         decoration: BoxDecoration(
           color: color ?? AppColors.primaryColor,
-          border: Border.all(
-            color: bordercolor ?? AppColors.primaryColor,
-            width: 1.2,
-          ),
+          // border: Border.all(
+          //   color: bordercolor ?? AppColors.primaryColor,
+          //   width: 1.2,
+          // ),
           borderRadius: BorderRadius.circular((borderRadius ?? 10).r),
         ),
         child: Center(

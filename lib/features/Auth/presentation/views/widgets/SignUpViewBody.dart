@@ -14,7 +14,7 @@ import 'Auth_Switch_Text.dart';
 import 'SignUp_textFields.dart';
 
 class Signupviewbody extends StatefulWidget {
-  const Signupviewbody({Key? key}) : super(key: key);
+  const Signupviewbody({super.key});
 
   @override
   State<Signupviewbody> createState() => _SignupviewbodyState();
@@ -73,8 +73,12 @@ class _SignupviewbodyState extends State<Signupviewbody> {
                     final email = emailController.text;
                     final password = passwordController.text;
                     final phone = phoneController.text;
-                   context.read<AuthCubit>().signUp(email: email, password: password, name: name, phone: phone);
-
+                    context.read<AuthCubit>().signUp(
+                      email: email,
+                      password: password,
+                      name: name,
+                      phone: phone,
+                    );
                   } else {
                     setState(() {
                       autovalidateMode = AutovalidateMode.always;
@@ -85,8 +89,12 @@ class _SignupviewbodyState extends State<Signupviewbody> {
               ),
               SizedBox(height: 24.h),
               GestureDetector(
-                  onTap: () => AppFunctions.navigateTo(context, SigninView()),
-                  child: AuthSwitchText(question: "have an account?" ,goTo: "Sign In",)),
+                onTap: () => AppFunctions.navigateTo(context, SigninView()),
+                child: AuthSwitchText(
+                  question: "have an account?",
+                  goTo: "Sign In",
+                ),
+              ),
             ],
           ),
         ),

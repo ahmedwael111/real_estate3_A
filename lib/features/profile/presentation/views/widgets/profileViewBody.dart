@@ -47,7 +47,6 @@ class _ProfileViewBody1State extends State<ProfileViewBody1> {
     final state = widget.state;
 
     return Scaffold(
-
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
@@ -63,7 +62,6 @@ class _ProfileViewBody1State extends State<ProfileViewBody1> {
                   onPickAvatar: () => _pickImage(isCover: false),
                 ),
               ),
-
 
               ProfileNameRow(
                 name: profile.name,
@@ -116,14 +114,16 @@ class _ProfileViewBody1State extends State<ProfileViewBody1> {
               SizedBox(height: 20.h),
               _SectionLabel(label: 'payment method'),
               SizedBox(height: 10.h),
-              _MenuCard(children:[
-                ProfileMenuItem(
-                  icon: Icons.lock_outline_rounded,
-                  title: 'Payment Method',
-                  subtitle: 'select your payment menthod',
-                  onTap: (){}
-                ),
-              ] ),
+              _MenuCard(
+                children: [
+                  ProfileMenuItem(
+                    icon: Icons.lock_outline_rounded,
+                    title: 'Payment Method',
+                    subtitle: 'select your payment menthod',
+                    onTap: () {},
+                  ),
+                ],
+              ),
               SizedBox(height: 20.h),
 
               // ── Setting & Security ─────────────────────────────────

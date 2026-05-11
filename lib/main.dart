@@ -9,11 +9,11 @@ import 'package:real_estate3_a/features/splash/presentation/views/splash_view.da
 import 'features/Home/domain/repo/HomeRepo.dart';
 import 'features/Home/presentation/home_cubit/home_cubit.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initAppModule();
-  Bloc.observer=MyBlocObserver();
+  Bloc.observer = MyBlocObserver();
   runApp(const RealStateApp3A());
 }
 
@@ -27,10 +27,9 @@ class RealStateApp3A extends StatelessWidget {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) {
-          return BlocProvider(
+        return BlocProvider(
           create: (_) => HomeCubit(getIt<HomeRepository>()),
           child: MaterialApp(
-
             debugShowCheckedModeBanner: false,
             title: 'Real Estate 3A',
             theme: ThemeData(
@@ -38,7 +37,7 @@ class RealStateApp3A extends StatelessWidget {
               primarySwatch: Colors.blue,
             ),
             home: const MainView(),
-          )
+          ),
         );
       },
     );

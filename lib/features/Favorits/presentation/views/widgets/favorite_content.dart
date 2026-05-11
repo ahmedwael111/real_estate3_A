@@ -1,16 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../domain/entities/favoriteEntity.dart';
 import '../../cubit/favorite_cubit.dart';
 import '../../cubit/favorite_state.dart';
+import 'FavoriteCategoryGridCard.dart';
 import 'FavoriteError.dart';
 import 'favorite_Empty.dart';
-import 'favorite_section.dart';
+import 'favorite_category.dart';
+
 
 class FavoriteContent extends StatelessWidget {
-  const FavoriteContent();
+  const FavoriteContent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class FavoriteContent extends StatelessWidget {
           );
         }
 
-        if (state is FavoriteErrorWidget ) {
+        if (state is FavoriteErrorWidget) {
           return FavoriteError(message: state.message);
         }
 
@@ -35,16 +37,37 @@ class FavoriteContent extends StatelessWidget {
         final grouped = _groupByCategory(favorites);
 
         return RefreshIndicator(
-          onRefresh: () =>
-              context.read<FavoriteCubit>().getFavorites(),
-          child: ListView.builder(
+          color: const Color(0xFF2EC4B6),
+          onRefresh: () => context.read<FavoriteCubit>().getFavorites(),
+          child: GridView.builder(
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 14.w,
+              mainAxisSpacing: 14.h,
+              childAspectRatio: 0.85,
+            ),
             itemCount: grouped.keys.length,
             itemBuilder: (_, i) {
-              final key = grouped.keys.elementAt(i);
-              return FavoriteSection(
-                categoryName: key,
-                items: grouped[key]!,
-                state: state,
+              final categoryName = grouped.keys.elementAt(i);
+              final items = grouped[categoryName]!;
+
+              return FavoriteCategoryGridCard(
+                categoryName: categoryName,
+                items: items,
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider.value(
+                      value: context.read<FavoriteCubit>(),
+                      child: FavoriteCategoryDetail(
+                        categoryName: categoryName,
+                        items: items,
+                      ),
+                    ),
+                  ),
+                ),
               );
             },
           ),
@@ -52,6 +75,7 @@ class FavoriteContent extends StatelessWidget {
       },
     );
   }
+
   Map<String, List<FavoriteEntity>> _groupByCategory(
       List<FavoriteEntity> favorites) {
     final map = <String, List<FavoriteEntity>>{};
