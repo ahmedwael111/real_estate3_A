@@ -43,12 +43,14 @@ class _OnboardingviewbodyState extends State<Onboardingviewbody> {
       children: [
         onBoarding_Image(),
         SizedBox(height: 48.h),
-        TextIndicatorSection(
-          pageController: pageController,
-          currentpage: currentpage,
+        Expanded(
+          child: TextIndicatorSection(
+            pageController: pageController,
+            currentpage: currentpage,
+          ),
         ),
-        SizedBox(height: 30.h),
-        Spacer(),
+        SizedBox(height: 20.h),
+        // Spacer(),
         Custom_OnBoarding_Button(
           text: "Continue",
           onpress: () {

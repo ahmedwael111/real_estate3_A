@@ -26,8 +26,8 @@ class TextIndicatorSection extends StatelessWidget {
         children: [
           TextsPageView(pageController: pageController),
 
-          SizedBox(height: 18.h),
-
+          // SizedBox(height: 18.h),
+          Spacer(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'package:real_estate3_a/core/utils/app_colors.dart';
 import 'package:real_estate3_a/features/Home/presentation/views/MainView.dart';
 
 import '../../../../../core/funcations/app_functions.dart';
@@ -29,6 +30,7 @@ class SignInBody_BlocConsumer extends StatelessWidget {
       },
       builder: (context, state) => ModalProgressHUD(
         inAsyncCall: state is SignInLoading ? true : false,
+        color: AppColors.splashColor,
         child: Signinviewbody(),
       ),
     );
