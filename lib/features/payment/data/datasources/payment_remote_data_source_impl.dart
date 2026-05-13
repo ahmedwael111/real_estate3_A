@@ -8,12 +8,14 @@ class PaymentRemoteDataSourceImpl implements PaymentRemoteDataSource {
   PaymentRemoteDataSourceImpl({required this.api});
 
   @override
-  Future<String> createOrder(int propertyId) async {
+  Future<String?> createOrder(int propertyId) async {
     final response = await api.post(
       AppConstants.createOrderEndpoint,
       data: {'property_id': propertyId},
       withAuth: true,
     );
+
+    print(response);
     final url = response['data']['payment_url'];
 
     return url;

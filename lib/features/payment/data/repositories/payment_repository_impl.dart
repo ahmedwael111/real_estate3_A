@@ -9,7 +9,7 @@ class PaymentRepositoryImpl implements PaymentRepository {
   PaymentRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, String>> createOrder(int propertyId) async {
+  Future<Either<Failure, String?>> createOrder(int propertyId) async {
     try {
       final url = await remoteDataSource.createOrder(propertyId);
       return Right(url);

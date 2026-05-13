@@ -8,7 +8,7 @@ class CreateOrderUseCase {
 
   CreateOrderUseCase({required this.repository});
 
-  Future<Either<Failure, String>> call(int propertyId) async {
+  Future<Either<Failure, String?>> call(int propertyId) async {
     return await repository.createOrder(propertyId);
   }
 }

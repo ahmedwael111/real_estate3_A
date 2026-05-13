@@ -18,7 +18,7 @@ class _PaymentDetailsScreenState extends State<PaymentDetailsScreen> {
   Widget build(BuildContext context) {
     return BlocProvider<PaymentCubit>(
       create: (context) => getIt<PaymentCubit>(),
-      child: MainPaymentScreens(),
+      child: MainPaymentScreens(propertyId: widget.propertyId,),
     );
   }
 }

@@ -14,7 +14,7 @@ class AppConstants {
       '/api/auth/verify-restpassword-otp';
   static const String changePasswordEndpoint =
       '/api/auth/change-password-with-restpassword-otp';
-
+  static const String orders = '/api/v1/orders';
   // Dynamic Endpoints
   static const String getPropertyDetailsEndpoint = '/api/v1/properties/';
 

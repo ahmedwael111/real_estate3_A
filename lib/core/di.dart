@@ -15,6 +15,10 @@ import 'package:real_estate3_a/features/Property%20Details/domin/repos/propety_d
 import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/property%20details%20cubit/property_details_cubit.dart';
 import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/cubit/similar_property_details_cubit.dart';
 import 'package:real_estate3_a/features/Property%20Details/presentaion/cubit/reviews_property_cubit.dart';
+import '../features/history/data/dataSource/HistoryRemoteDataSource.dart';
+import '../features/history/data/repo/HistoryRepositoryImpl.dart';
+import '../features/history/domain/repo/HistoryRepository.dart';
+import '../features/history/presentation/cubit/history_cubit.dart';
 import 'save data/save_data.dart';
 import 'security/security_helper.dart';
 import 'api/dio_helper.dart';
@@ -60,10 +64,28 @@ Future<void> initAppModule() async {
   getIt.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSourceImpl(),
   );
+  getIt.registerLazySingleton<ApiConsumer>(
+        () => ApiConsumer(),
+  );
+
   getIt.registerLazySingleton<ProfileRepository>(
     () => ProfileRepositoryImpl(
       remoteDataSource: getIt<ProfileRemoteDataSource>(),
     ),
+  );
+
+  getIt.registerLazySingleton<HistoryRemoteDataSource>(
+        () => HistoryRemoteDataSourceImpl(api: getIt<ApiConsumer>()),
+  );
+
+  getIt.registerLazySingleton<HistoryRepository>(
+        () => HistoryRepositoryImpl(remoteDataSource: getIt<HistoryRemoteDataSource>()),
+  );
+
+
+
+  getIt.registerLazySingleton<HistoryCubit>(
+        () => HistoryCubit(getOrdersrepo: getIt<HistoryRepository>()),
   );
 
   await DioHelper.init();

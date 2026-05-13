@@ -16,7 +16,7 @@ class PaymentCubit extends Cubit<PaymentState> {
 
     result.fold(
       (failure) => emit(PaymentError(message: failure.message)),
-      (url) => emit(PaymentLoaded(url: url)),
+      (url) => emit(PaymentLoaded(url: url ??"")),
     );
   }
 }

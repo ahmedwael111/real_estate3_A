@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,8 +12,8 @@ import 'package:real_estate3_a/features/payment/presentation/screens/payment_scr
 import 'package:real_estate3_a/features/payment/presentation/widgets/request_to_book_step_view.dart';
 
 class MainPaymentScreens extends StatelessWidget {
-  const MainPaymentScreens({super.key});
-
+  const MainPaymentScreens({super.key,required this.propertyId});
+  final int propertyId;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,6 +43,8 @@ class MainPaymentScreens extends StatelessWidget {
         child: BlocConsumer<PaymentCubit, PaymentState>(
           listener: (context, state) {
             if (state is PaymentError) {
+
+              print(state.message);
               CustomToast.showError(state.message);
             } else if (state is PaymentLoaded) {
               Navigator.push(
@@ -60,7 +64,7 @@ class MainPaymentScreens extends StatelessWidget {
               color: AppColors.teal,
               bordercolor: AppColors.teal,
               onTap: () async {
-                await context.read<PaymentCubit>().createOrder(96);
+                await context.read<PaymentCubit>().createOrder(propertyId);
               },
               fontSize: 14.sp,
             );

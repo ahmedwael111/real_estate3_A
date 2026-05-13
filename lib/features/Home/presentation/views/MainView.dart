@@ -10,6 +10,7 @@ import '../../../../core/di.dart';
 import '../../../Favorits/domain/repo/favoriteRepo.dart';
 import '../../../Favorits/presentation/cubit/favorite_cubit.dart';
 import '../../../Favorits/presentation/views/FavoriteView.dart';
+import '../../../history/presentation/views/HistoryScreen.dart';
 import 'widgets/CustomBottomNavigationBar.dart';
 
 class MainView extends StatefulWidget {
@@ -33,7 +34,7 @@ class _MainViewState extends State<MainView> {
             const HomeView(),
             const FavoriteView(),
             const MapRealStateView(),
-            const SizedBox(),
+            const HistoryScreen(),
             ProfileView(),
           ];
 
